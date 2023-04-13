@@ -4,19 +4,6 @@ const CartsManager = require('../CartsManager');
 const router = Router();
 const manager = new CartsManager();
 
-/**
- para la ruta carts, se debe configurar:
-  * la ruta POST '/' que debe crear un nuevo carrito con la siguiente estructura:
-    - ID irrepetible
-    - products []
-    ✅
-  * la ruta GET '/:id' que debe listar los productos que pertenezcan al carrito provisto por el paramatro id
-    ✅
-  * la ruta POST '/:id/product/:id' que debe AGREGAR el producto al arreglo products con el siguiente formato:
-    - ID del producto
-    - quantity: n° de ejemplares del producto. Por ahora, se agregará de uno en uno. Si existe el producto, debe sumarse la cantidad en lugar de crear uno nuevo.
-  * debe usarse file system para persistencia de datos.
- */
 
 /*------  Método GET ------*/
 // Todos los carritos
@@ -29,6 +16,7 @@ router.get('/', ( req, res ) => {
     }
 })
 
+// Carrito por ID
 router.get('/:id', ( req, res ) => {
     try {
         const ID = +req.params.id;
