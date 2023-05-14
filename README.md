@@ -1,4 +1,4 @@
-# backend-coder-proyecto
+<!-- # backend-coder-proyecto
 
 Hola 👋, muy buenas. Este el proyecto final para el curso de backend en coderhouse.
 Se trata del backend para un **ecommerce**. La vista frontend aún no está disponible 😔.
@@ -109,4 +109,8 @@ Además, el código previene que un producto se repita dentro de un mismo carrit
 
 ## Dependencias 🎯
 
-Express: 4.18.2 | Framework backend
+Express: 4.18.2 | Framework backend -->
+
+
+
+# Pre entrega 2

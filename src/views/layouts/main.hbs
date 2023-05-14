@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {{!-- tailwindcss --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {{!-- icons --}}
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+
+    {{!-- user styles --}}
+    <link rel="stylesheet" href="../styles.css">
+
+    <title>{{pageTitle}}</title>
+</head>
+<body>
+    <nav class="bg-white fixed w-full z-20 top-0 left-0 border-b border-gray-200">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto py-2 px-4">
+            <a href="/products" class="flex items-center justify-center text-2xl gap-2">
+                <i class="ri-shopping-bag-3-line p-0 m-0"></i>
+                <span class="font-semibold">Store</span>
+            </a>
+            <div class="flex items-center gap-4 font-medium">
+                <a href="/products" class="text-neutral-800 hover:text-blue-700">
+                    Todos los produtos
+                </a>
+                <a href="/products/create" class="text-white bg-blue-600 hover:bg-blue-800 text-sm px-4 py-2 text-center">
+                    Crear producto
+                </a>
+                <a href="/carts">
+                    <i class="ri-shopping-cart-2-fill text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <main class="bg-white min-h-screen pt-16">
+        {{{ body }}}
+    </main>
+    
+</body>
+</html>

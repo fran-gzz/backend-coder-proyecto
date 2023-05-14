@@ -1,15 +1,21 @@
 {
-  "name": "01-primerentrega",
-  "version": "1.0.0",
-  "description": "",
-  "main": "./src/server.js",
+  "name": "02-segundaentrega",
+  "version": "2.0.0",
+  "description": "Segunda entrega del proyecto final del Curso de Backend en Coderhouse.",
+  "main": "src/app.js",
+  "type": "module",
   "scripts": {
+    "start": "node .",
+    "dev": "node --watch .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.7",
+    "mongoose": "^7.1.0",
+    "mongoose-paginate-v2": "^1.7.1"
   }
 }

@@ -1,65 +1,65 @@
-const { Router } = require('express')
-const ProductsManager = require('../ProductsManager')
+import { Router } from 'express';
+import productModel from '../models/products.model.js'
 
 
 const router = Router();
-const manager = new ProductsManager();
 
-
-/*------  Método GET ------*/
-// Todos los productos
-router.get('/', ( req, res ) => {
-    try {
-        const limit = req.query.limit;
-        const data = manager.getProducts();
-        ( limit )
-            ? res.status( 200 ).send({ data: data.slice( 0, limit )})
-            : res.status( 200 ).send({ data })
-    } catch (error) {
-        res.status( 500 ).send({ error: error.message });
-    }
+// Create
+router.get('/create', (req, res) => {
+    res.render('create', {
+        pageTitle: 'Crear un nuevo producto'
+    })
+})
+router.post('/', async (req, res) => {
+    const product = req.body;
+    const newProduct = new productModel( product )
+    await newProduct.save();
+    res.redirect('/products')
 })
 
-// Productos por ID
-router.get('/:id', ( req, res ) => {
-    try {
-        const ID = +req.params.id;
-        const product = manager.getProductById( ID )
-        res.status( 200 ).send({ product })
-    } catch ( error ) {
-        res.status( 404 ).send({ error: error.message })
-    }
+// Update
+router.get('/update/:id', async (req, res) => {
+    const _id = req.params.id;
+    const product = await productModel.findById({_id}).lean().exec();
+    res.render('update', { 
+        pageTitle: "Actualizar producto",
+        product
+    })
+})
+router.put('/:id', async (req, res) => {
+    const _id = req.params.id;
+    const productNewData = req.body
+    await productModel.findByIdAndUpdate({ _id }, { ...productNewData })
 })
 
-/*------  Método POST ------*/
-// Añadir producto
-router.post('/', ( req, res ) => {
-    const newProduct = { 
-        title:  req.body.title,
-        description: req.body.description,
-        price: +req.body.price,
-        code: req.body.code,
-        stock: +req.body.stock
-    }
-    manager.addProduct( newProduct )
-    res.status( 201 ).send({ message: 'Producto agregado' })
+
+
+// Read
+router.get('/', async ( req, res ) => {
+    let page = parseInt( req.query.page )
+    if( !page ) page = 1
+
+    const products = await productModel.paginate({}, { page, limit: 6, lean: true})
+
+    products.prevLink = products.hasPrevPage ? `/products?page=${products.prevPage}` : '';
+    products.nextLink = products.hasNextPage ? `/products?page=${products.nextPage}` : '';
+    res.render('products', products )
+})
+router.get('/:title', async(req, res) => {
+    const product = await productModel.findOne(req.res.title).lean().exec()
+    res.render('product', {
+        pageTitle: 'Producto',
+        product
+    })
 })
 
-/*------  Método PUT ------*/
-// Editar producto
-router.put('/:id', ( req, res ) => {
-    const ID = +req.params.id;
-    const updates = req.body
-    manager.updateProduct( ID, updates )
-    res.status( 202 ).send({ message: `Producto con el ID: ${ ID } actualizado.` })
+
+
+// Delete
+router.delete('/:title', async (req, res) => {
+    const title = req.params.title
+    await productModel.deleteOne({ title })
+    res.send(`Producto con el ID [${title}] eliminado exitosamente`)
 })
 
-/*------  Método DELETE ------*/
-// Eliminar producto
-router.delete('/:id', ( req, res ) => {
-    const id = +req.params.id;
-    manager.deleteProduct( id );
-    res.status( 202 ).send({ message: `Producto con el ID: ${id} ha sido eliminado.` })
-})
-
-module.exports = router;
+export default router;

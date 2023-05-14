@@ -1,45 +1,47 @@
-const { Router } = require('express');
-const CartsManager = require('../CartsManager');
+import { Router } from 'express';
+import cartModel from '../models/carts.model.js';
+import productModel from '../models/products.model.js';
+
 
 const router = Router();
-const manager = new CartsManager();
+
+router.get('/', async (req, res) => {
+    const cart = await cartModel.findOne().populate('products');
+    const products = cart.products
+    console.log(products)
+    res.render('cart', { 
+        pageTitle: 'Carrito',
+        products
+    });
+    
+});
 
 
-/*------  Método GET ------*/
-// Todos los carritos
-router.get('/', ( req, res ) => {
-    const data =  manager.getCarts();
-    if ( !data ) {
-        res.status( 204 ).send({ message: 'No hay carritos' })
-    } else {
-        res.status( 200 ).send({ data })
-    }
-})
 
-// Carrito por ID
-router.get('/:id', ( req, res ) => {
+router.post('/add/:productId', async ( req, res ) => {
     try {
-        const ID = +req.params.id;
-        const cart = manager.getCartByID( ID );
-        res.status( 200 ).send({ cart })
-    } catch ( error ) {
-        res.status( 404 ).send({ error: error.message })
+        const productId =  req.params.productId
+        const product = await productModel.findById( productId )
+
+        if( !product ) {
+            return res.status(404).send('Producto no encontrado')
+        }
+
+        let cart = await cartModel.findOne()
+        if (!cart ) {
+            cart = await cartModel.create({})
+        }
+
+        cart.products.push(product._id)
+        await cart.save()
+
+        res.send({ message: 'Producto agregado al carrito' })
+
+    } catch ( error ){
+        res.status(404).send({ error: 'Error interno del servidor' })
     }
 })
 
-/*------  Método POST ------*/
-// Crea un carrito
-router.post('/', ( req, res ) => {
-    manager.createCart();
-    res.status( 201 ).send('Carrito creado. 👌')
-})
 
-// Agregar producto al carrito
-router.post('/:cid/product/:pid', ( req, res ) => {
-    const cartID = +req.params.cid;
-    const productID = +req.params.pid;
-    manager.addToCart(productID, cartID)
-    res.status( 201 ).send('Producto añadido al carrito')
-})
 
-module.exports = router;
+export default router;
