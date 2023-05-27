@@ -54,7 +54,7 @@
             <label for="message" class="block mb-2 text-sm font-medium text-neutral-800">
                 Descripción del producto
             </label>
-            <textarea name="description" id="description" rows="4" class="block p-2.5 w-full text-sm text-neutral-800 bg-gray-50 rounded-lg border border-gray-300" placeholder="Guitarra eléctrica de la marca Fender, viene en colores..." required></textarea>
+            <textarea name="description" id="description" rows="4" class="block p-2.5 w-full text-sm text-neutral-800 bg-gray-50 rounded-lg border border-gray-300" placeholder="Guitarra eléctrica de la marca Fender, viene en colores..." required>{{product.description}}</textarea>
         </div>
         <button 
             onclick="updateProduct('{{product._id}}')" 

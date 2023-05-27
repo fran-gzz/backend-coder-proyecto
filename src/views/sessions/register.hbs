@@ -1,0 +1,54 @@
+<section style="max-width: 600px; margin:0 auto;" class="px-2">
+    <h1 class="text-4xl font-semibold text-center">
+        Registrar usuario
+    </h1>
+    <form class="mt-12 w-full flex flex-col" action="/sessions/register" method="post">
+        <div class="mb-4 flex gap-2 items-center">
+            <div class="flex flex-col w-full">
+                <label for="first_name" class="block mb-2 text-sm font-medium text-neutral-800 ">
+                    Nombre
+                </label>
+                <input type="text" name="first_name" class="bg-gray-50 border border-gray-300 text-neutral-800 text-sm rounded-lg w-full p-2.5" placeholder="Juan" required>
+            </div>
+            <div class="flex flex-col w-full">
+                <label for="last_name" class="block mb-2 text-sm font-medium text-neutral-800 ">
+                    Apellido
+                </label>
+                <input type="text" name="last_name" class="bg-gray-50 border border-gray-300 text-neutral-800 text-sm rounded-lg w-full p-2.5" placeholder="Pérez" required>
+            </div>
+        </div>
+        
+        <div class="mb-4 flex gap-2 items-center">
+            <div class="flex flex-col w-full">
+                <label for="age" class="block mb-2 text-sm font-medium text-neutral-800 ">
+                    Edad
+                </label>
+                <input type="number" name="age" class="bg-gray-50 border border-gray-300 text-neutral-800 text-sm rounded-lg block w-full p-2.5" placeholder="24" required>
+            </div>
+            <div class="flex flex-col w-full">
+                <label for="email" class="block mb-2 text-sm font-medium text-neutral-800 ">
+                    Email
+                </label>
+                <input type="email" name="email" class="bg-gray-50 border border-gray-300 text-neutral-800 text-sm rounded-lg  block w-full p-2.5" placeholder="ejemplo@email.com" required>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label for="password" class="block mb-2 text-sm font-medium text-neutral-800">
+                Contraseña
+            </label>
+            <input type="password" name="password" class="bg-gray-50 border border-gray-300 text-neutral-800 text-sm rounded-lg  block w-full p-2.5" required>
+        </div>
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center self-end">
+            Registrar
+        </button>
+    </form>
+
+    <p class="text-center mt-3">¿Ya tienes una cuenta? <a class="text-blue-700" href="/sessions/login">Inicia sesión.</a></p>
+
+    <div class="flex flex-col w-full mt-6 border-t border-neutral-200">
+        <p class="text-center my-4">Regístrate con Github</a></p>
+        <a href="/sessions/github" class="bg-neutral-800 border border-neutral-300 text-neutral-200 text-sm rounded-lg w-full p-2.5 text-center hover:bg-neutral-900">
+            Github <i class="ri-github-line"></i>
+        </a>
+    </div>
+</section>

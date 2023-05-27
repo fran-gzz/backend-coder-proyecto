@@ -33,23 +33,48 @@ router.put('/:id', async (req, res) => {
 })
 
 
-
 // Read
-router.get('/', async ( req, res ) => {
-    let page = parseInt( req.query.page )
-    if( !page ) page = 1
+const auth = (req, res, next ) => {
+    if(req.session.user) return next()
+    return res.redirect('/sessions/login')
+}
 
+router.get('/', auth, async ( req, res ) => {
+
+    let page = parseInt( req.query.page ) || 1;
+    
     const products = await productModel.paginate({}, { page, limit: 6, lean: true})
+    const user = req.session.user
 
-    products.prevLink = products.hasPrevPage ? `/products?page=${products.prevPage}` : '';
-    products.nextLink = products.hasNextPage ? `/products?page=${products.nextPage}` : '';
-    res.render('products', products )
+    console.log(user);
+    const isAdmin = user?.role === 'admin'
+
+    res.render('products', {
+        pageTitle: 'Productos',
+        docs: products.docs,
+        hasPrevPage: products.hasPrevPage,
+        hasNextPage: products.hasNextPage,
+        prevLink: products.hasPrevPage ? `/products?page=${ products.prevPage }` : '',
+        nextLink: products.hasNextPage ? `/products?page=${ products.nextPage }` : '',
+        isLoggedIn: true,
+        isAdmin
+    })
 })
-router.get('/:title', async(req, res) => {
-    const product = await productModel.findOne(req.res.title).lean().exec()
+
+
+router.get('/:title', auth, async(req, res) => {
+    
+    const title = req.params.title
+    const product = await productModel.findOne({title}).lean().exec()
+    
+    const user = req.session.user
+    const isAdmin = user?.role === 'admin';
+
     res.render('product', {
-        pageTitle: 'Producto',
-        product
+        pageTitle: title,
+        product,
+        isLoggedIn: true,
+        isAdmin
     })
 })
 

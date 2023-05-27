@@ -1,6 +1,114 @@
-<section>
-    <h1>Carrito</h1>
-    {{#each products}}
-        <p>{{this.title}}</p>
-    {{/each}}
+<script>
+    function cleanCart() {
+        fetch('http://localhost:8080/carts/delete/', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        window.location.href = 'http://localhost:8080/carts'
+    }
+    function removeFromCart(productId) {
+  fetch(`http://localhost:8080/carts/delete/${productId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Mostrar notificación de éxito o realizar alguna acción adicional si es necesario
+      console.log(data.message);
+      // Redireccionar a la página del carrito después de eliminar el producto
+      window.location.href = 'http://localhost:8080/carts';
+    })
+    .catch((error) => {
+      // Mostrar notificación de error o manejar el error de alguna otra manera
+      console.error('Error:', error);
+    });
+}
+
+</script>
+
+
+<section style="max-width: 1200px; margin:0 auto;" class="px-2 flex flex-col">
+    <h1 class="text-4xl font-semibold text-center py-8">
+        Carrito
+    </h1>
+    {{#if docs.length}}
+    <div class="self-end my-4 flex flex-row gap-2">
+        <button 
+            onclick="cleanCart()"
+            class="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm w-auto px-5 py-2 text-center"
+        >
+            Vaciar carrito
+        </button>
+        <button class="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm w-auto px-5 py-2 text-center">
+            Pagar
+        </button>
+    </div>
+    <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Producto
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Título
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Cantidad
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Precio unitario
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Precio total
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each docs}}
+                <tr class="bg-white border-b">
+                    <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
+                        <a href="/products/{{this.product.title}}">
+                        <img src="{{this.product.thumbnail}}" class="h-14 w-14 rounded-full" alt="{{this.product.title}}">
+                        </a>
+                    </th>
+                    <td class="px-6 py-4">
+                        <a href="/products/{{this.product.title}}">
+                            {{this.product.title}}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        {{this.quantity}}
+                    </td>
+                    <td class="px-6 py-4">
+                        ${{this.product.price}}
+                    </td>
+                    <td class="px-6 py-4">
+                        ${{this.totalPrice}}
+                    </td>
+                    <td class="px-6 py-4">
+                        <button
+                            onclick="removeFromCart('{{this.product._id}}')"
+                            class="border border-gray-300 p-2 h-10 w-10 flex justify-center items-center text-gray-500 hover:bg-gray-100 hover:text-red-500 rounded-lg"
+                        >
+                            <i class="ri-delete-bin-6-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <p class="text-center border border-red-300 self-center mt-8 px-4 py-8 w-1/2 bg-red-200 text-red-500 rounded-lg font-semibold">
+        Aún no agregaste productos al carrito...
+    </p>
+    {{/if}}
 </section>
+
+

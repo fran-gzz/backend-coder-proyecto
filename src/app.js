@@ -1,9 +1,15 @@
 import express from 'express'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import passport from 'passport';
+import initializePassport from './utils/passport.config.js';
 
 import productsRouter from './routes/products.router.js'
 import cartsRouter from './routes/cart.router.js'
+import sessionRouter from './routes/session.router.js'
+
 
 const app = express();
 
@@ -18,9 +24,26 @@ app.set('view engine', '.hbs')
 // Archivos estáticos
 app.use(express.static('./src/public'))
 
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: "mongodb+srv://admin:nVmcprqyKBizD14o@ecommerce.suvajub.mongodb.net",
+        dbName: 'ecommerce'
+    }),
+    secret: 'supersecret',
+    resave: true,
+    saveUninitialized: true
+}))
 
+// Passport
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+
+// Redirect a ruta de productos
 app.get('/', (req, res) => {
-    res.redirect('/products')
+    res.redirect('/sessions/login')
 })
 
 // Ruta de productos
@@ -28,6 +51,9 @@ app.use('/products', productsRouter)
 
 // Ruta del carrito
 app.use('/carts', cartsRouter)
+
+// Ruta de sesiones
+app.use('/sessions', sessionRouter)
 
 const PORT = 8080
 
