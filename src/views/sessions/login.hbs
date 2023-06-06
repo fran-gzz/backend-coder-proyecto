@@ -1,33 +1,19 @@
-<section style="max-width: 600px; margin:0 auto;" class="px-2">
-    <h1 class="text-4xl font-semibold text-center">
-        Iniciar sesión
-    </h1>
-    <form class="mt-12  flex flex-col items-center gap-y-4" action="/sessions/login" method="post">
-        <div class="flex flex-col w-full">
-            <label for="email" class="block mb-2 text-sm font-medium text-neutral-800 ">
-                Email
-            </label>
-            <input type="email" name="email" class="bg-gray-50 border border-gray-300 text-neutral-800 text-sm rounded-lg  block w-full p-2.5" placeholder="ejemplo@email.com" required>
-        </div>
-
-        <div class="flex flex-col w-full">
-            <label for="password" class="block mb-2 text-sm font-medium text-neutral-800">
-                Contraseña
-            </label>
-            <input type="password" name="password" class="bg-gray-50 border border-gray-300 text-neutral-800 text-sm rounded-lg  block w-full p-2.5" required>
-        </div>
-        
-        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center self-end">
-            Acceder
-        </button>
-
-        
-    </form>
-    <p class="text-center mt-3">¿Aún no tienes cuenta? <a class="text-blue-700" href="/sessions/register">Regístrate.</a></p>
-    <div class="flex flex-col w-full mt-6 border-t border-neutral-200">
-        <p class="text-center my-4">Ingresa con Github</a></p>
-        <a href="/sessions/github" class="bg-neutral-800 border border-neutral-300 text-neutral-200 text-sm rounded-lg w-full p-2.5 text-center hover:bg-neutral-900">
-            Github <i class="ri-github-line"></i>
-        </a>
-    </div>
+<section class='bg-neutral h-screen flex items-center justify-center'>
+    <article class='card w-1/2 bg-base-100 shadow-xl py-4 px-6'>
+        <h1 class='text-2xl text-center mb-10'>
+            Iniciar sesión
+        </h1>
+        <form class='w-full flex flex-col gap-8' action='/sessions/login' method='post'>
+            <input type='email' name='email' class='input input-bordered w-full' placeholder='Email' required>
+            <input type='password' name='password' class='input input-bordered w-full' placeholder='Contraseña' required>
+            <button type='submit' class='btn btn-primary text-primary hover:text-base-100'>
+                Ingresar
+            </button>
+        </form>
+        <p class='text-center pt-4'>
+            ¿Aún no tienes cuenta? <a class='text-primary font-bold' href='/sessions/register'>Regístrate.</a>
+        </p>
+        <div class='divider'> O </div>
+        <a href='/sessions/github' class='btn btn-neutral'> Ingresa con Github </a>
+    </article>
 </section>

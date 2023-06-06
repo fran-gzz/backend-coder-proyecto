@@ -1,58 +1,65 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang='es' data-theme='corporate'>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    {{!-- tailwindcss --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset='UTF-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    
     {{!-- icons --}}
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link href='https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css' rel='stylesheet'>
+
+    {{!-- DaysiUI --}}
+    <link href='https://cdn.jsdelivr.net/npm/daisyui@3.0.3/dist/full.css' rel='stylesheet' type='text/css' />
+    {{!-- tailwindcss --}}
+    <script src='https://cdn.tailwindcss.com'></script>
 
     {{!-- user styles --}}
-    <link rel="stylesheet" href="../styles.css">
+    <link rel='stylesheet' href='../styles.css'>
 
     <title>{{pageTitle}}</title>
 </head>
 <body>
     
     {{#if isLoggedIn}}
-        <nav class="bg-white fixed w-full z-20 top-0 left-0 border-b border-gray-200">
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto py-2 px-4">
-            <a href="/products" class="flex items-center justify-center text-2xl gap-2">
-                <i class="ri-shopping-bag-3-line p-0 m-0"></i>
-                <span class="font-semibold">Store</span>
-            </a>            
-            <div class="flex items-center gap-4 font-medium">
-
-                    <a href="/products" class="text-neutral-800 hover:text-blue-700">
-                        Todos los produtos
-                    </a>
-                    {{#if isAdmin}}
-                    <a href="/products/create" class="text-neutral-800 hover:text-blue-700">
-                        Crear producto
-                    </a>
-                    {{/if}}
+    <nav class='navbar bg-base-100 px-4 w-full fixed z-10 border-b border-base-200 shadow-sm'>
+        <div class='flex-1'>
+            <a href='/products' class='btn btn-ghost normal-case text-xl'>
+                Store
+            </a>
+        </div>
                     
-                    <a href="/sessions/logout" class="text-white bg-neutral-800 hover:bg-neutral-900 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2 text-center">
-                        Cerrar sesión
-                    </a>
-                    <a href="/carts">
-                        <i class="ri-shopping-cart-2-fill text-xl"></i>
-                    </a>
-            </div>
+        <div class='flex items-center gap-4 font-medium'>
+            <a href='/products' class='btn btn-ghost text-sm normal-case'>
+                Inicio
+            </a>
+            {{#if isAdmin}}
+            <a href='/products/create' class='btn btn-ghost text-sm normal-case'>
+                Crear producto
+            </a>
+            {{/if}}
+            
+            <a href='/sessions/logout' class='btn btn-outline btn-neutral text-sm normal-case'>
+                Cerrar sesión
+            </a>
+            <a href='/carts' class='btn btn-ghost font-normal'>
+                <i class='ri-shopping-cart-2-fill text-xl'></i>
+            </a>
         </div>
     </nav>
     {{/if}}
     
-    
-    
-    <main class="bg-white min-h-screen pt-16">
+    <main class='bg-base-100'>
         {{{ body }}}
     </main>
     
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <footer class="footer footer-center p-4 bg-neutral text-base-100">
+        <div class="join">
+            <p>Hecho con ❤ por</p>
+            <a href="https://www.frangonzalez.tech" class="text-accent" target="_blank">Fran</a>
+        </div>
+    </footer>
+
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
 
 </body>
 </html>

@@ -1,4 +1,51 @@
-<div>
-    <h2>{{product.title}}</h2>
-    <img src="{{product.thumbnail}}" alt="{{product.title}}" width="100">
+<script>
+    function AddToCart(id) {
+        fetch(`http://localhost:8080/carts/add/${id}`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+        // Mostrar notificación de éxito
+        Swal.fire({
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        console.log(data);
+        })
+        .catch((error) => {
+        console.error('Error:', error);
+        // Mostrar notificación de error
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se puedo agregar el producto al carrito.',
+        });
+        });
+    }
+</script>
+
+
+
+<div class="min-h-screen flex items-center justify-center bg-base-100 mx-auto " style="max-width: 1100px;" >
+    <div class="hero-content flex-col lg:flex-row gap-4">
+        <img src="{{product.thumbnail}}" class="max-w-sm rounded-lg shadow-2xl" />
+        <div>
+            <h1 class="text-5xl font-bold">{{product.title}}</h1>
+
+            <div class="flex items-center gap-x-6 my-4">
+                <p class="text-2xl text-primary font-bold">${{product.price}}</p>
+                <p class="text-sm font-semibold">Stock: {{product.stock}} unidad(es)</p>
+            </div>
+
+            <button onclick="AddToCart('{{product._id}}')" class="btn btn-neutral normal-case btn-wide">
+                Añadir al carrito
+            </button>
+            <p class="py-6">{{product.description}}</p>
+        </div>
+    </div>
 </div>

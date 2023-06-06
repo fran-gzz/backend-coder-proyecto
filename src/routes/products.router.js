@@ -4,10 +4,25 @@ import productModel from '../models/products.model.js'
 
 const router = Router();
 
+const auth = (req, res, next ) => {
+    if(req.session.user) return next()
+    return res.redirect('/sessions/login')
+}
+
+
 // Create
-router.get('/create', (req, res) => {
+router.get('/create', auth, (req, res) => {
+
+    const user = req.session.user
+    let isAdmin = false;
+    if ( user?.role === 'admin' ) {
+        isAdmin = true
+    }
+
     res.render('create', {
-        pageTitle: 'Crear un nuevo producto'
+        pageTitle: 'Crear un nuevo producto',
+        isLoggedIn: true,
+        isAdmin: isAdmin
     })
 })
 router.post('/', async (req, res) => {
@@ -21,9 +36,16 @@ router.post('/', async (req, res) => {
 router.get('/update/:id', async (req, res) => {
     const _id = req.params.id;
     const product = await productModel.findById({_id}).lean().exec();
+    const user = req.session.user
+    let isAdmin = false;
+    if ( user?.role === 'admin' ) {
+        isAdmin = true
+    }
     res.render('update', { 
         pageTitle: "Actualizar producto",
-        product
+        product,
+        isLoggedIn: true,
+        isAdmin: isAdmin
     })
 })
 router.put('/:id', async (req, res) => {
@@ -34,10 +56,7 @@ router.put('/:id', async (req, res) => {
 
 
 // Read
-const auth = (req, res, next ) => {
-    if(req.session.user) return next()
-    return res.redirect('/sessions/login')
-}
+
 
 router.get('/', auth, async ( req, res ) => {
 
@@ -46,8 +65,16 @@ router.get('/', auth, async ( req, res ) => {
     const products = await productModel.paginate({}, { page, limit: 6, lean: true})
     const user = req.session.user
 
-    console.log(user);
-    const isAdmin = user?.role === 'admin'
+    let isAdmin = false;
+
+    if ( user?.role === 'admin' ) {
+        isAdmin = true
+    }
+
+    products.docs = products.docs.map( product => {
+        return {...product, isAdmin}
+    })
+    
 
     res.render('products', {
         pageTitle: 'Productos',
@@ -57,7 +84,8 @@ router.get('/', auth, async ( req, res ) => {
         prevLink: products.hasPrevPage ? `/products?page=${ products.prevPage }` : '',
         nextLink: products.hasNextPage ? `/products?page=${ products.nextPage }` : '',
         isLoggedIn: true,
-        isAdmin
+        isAdmin: isAdmin,
+        username: user.username
     })
 })
 

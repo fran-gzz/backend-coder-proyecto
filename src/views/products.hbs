@@ -1,104 +1,105 @@
 <script>
     function deleteProduct(title) {
         fetch(`http://localhost:8080/products/${title}`, {
-            method: "delete"
+            method: 'delete'
         })
         window.location.href = 'http://localhost:8080/products'
     }
-    
     function AddToCart(id) {
         fetch(`http://localhost:8080/carts/add/${id}`, {
             method: 'POST',
             headers: {
-            'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         })
-        .then((response) => response.json())
-        .then((data) => {
-        // Mostrar notificación de éxito
-        Swal.fire({
-            icon: 'success',
-            title: 'Producto agregado al carrito',
-            showConfirmButton: false,
-            timer: 1500,
-        });
-        console.log(data);
-        })
-        .catch((error) => {
-        console.error('Error:', error);
-        // Mostrar notificación de error
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se puedo agregar el producto al carrito.',
-        });
-        });
+            .then((response) => response.json())
+            .then((data) => {
+                // Mostrar notificación de éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Producto agregado al carrito',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Mostrar notificación de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se puedo agregar el producto al carrito.',
+                });
+            });
     }
-
-
 </script>
 
+{{#if isAdmin}}
 
+<section class="hero pt-28 pb-8">
+    <h1 class="text-2xl font-bold">Bienvenido, admin</h1>
+</section>
 
-<section class="products">
-    {{#each docs}}
-    <article class="flex flex-col mt-4">
-        <div class="product">
-            <a href="/products/{{this.title}}">
-                <img src={{ this.thumbnail }} alt={{ this.title }}>
-                <p class="ml-2">${{ this.price }}</p>
-            </a>
-            <div class="w-full px-2 overflow-x-hidden flex flex-col gap-y-2">
-                <h3 class="whitespace-nowrap">{{ this.title }}</h3>
-                <p class="text-sm font-semibold">Stock: {{this.stock}}</p>
-            </div>
+{{else}}
+<section class="hero min-h-screen" style="background-image: url(../banner.jpg);">
+    <div class="hero-overlay bg-opacity-60"></div>
+    <div class="hero-content text-center text-neutral-content">
+        <div >
+            <p class="text-lg font-bold"> Bienvenido, <span class="capitalize">{{username}}</span></p> 
+            <h1 class="mb-5 text-5xl">¡Elige tu pasión y viste tu equipo!</h1>
+            <p class="text-sm">
+                Descubre nuestra colección de camisetas de fútbol auténticas y muestra tu apoyo incondicional. <br>
+                Con materiales de calidad y diseños emblemáticos, lleva el espíritu del fútbol en tu estilo. <br>
+                ¡Únete a nosotros y celebremos juntos el deporte más apasionante del mundo!
+            </p>
         </div>
-         <div class="flex justify-between items-center gap-2 mb-2 px-2">
-            <button 
-                onclick="AddToCart('{{this._id}}')"
-                class="text-white bg-neutral-800 hover:bg-neutral-900 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2 text-center"
-            >
-                Add to cart 
-            </button>
-            {{!-- {{#if isAdmin}} --}}
-                <div class="flex gap-2">
-                <a
-                    href="/products/update/{{this._id}}"
-                    class="border border-gray-300 p-2 h-10 w-10 flex justify-center items-center text-gray-500 hover:bg-gray-100 hover:text-green-500 rounded-lg">
-                    <i class="ri-pencil-fill"></i>
-                </a>
-                <button 
-                    onclick="deleteProduct('{{this.title}}')"
-                    class="border border-gray-300 p-2 h-10 w-10 flex justify-center items-center text-gray-500 hover:bg-gray-100 hover:text-red-500 rounded-lg"
-                >
-                    <i class="ri-delete-bin-6-fill"></i>
+    </div>
+</section>
+{{/if}}
+
+<section class='products'>
+    {{#each docs}}
+    <article class='card bg-base-100 shadow-xl'>
+        <a href='/products/{{this.title}}'>
+            <img src={{ this.thumbnail }} alt={{ this.title }}>
+        </a>
+        <div class='card-body p-2'>
+            <h2 class='card-title text-sm'>{{ this.title }}</h2>
+            <p class='text-sm'>${{this.price}}</p>
+            <div class='join gap-2 w-full justify-between'>
+                <button onclick="AddToCart('{{this._id}}')"
+                    class='btn btn-neutral normal-case {{#if this.isAdmin}} {{else}} btn-wide{{/if}}'>
+                    Añadir al carrito
                 </button>
+                <div class="join gap-2">
+                    {{#if this.isAdmin}}
+                    <a href='/products/update/{{this._id}}' class='btn btn-outline btn-success join-item'>
+                        <i class='ri-pencil-fill'></i>
+                    </a>
+                    <button onclick='deleteProduct(' {{this.title}}')' class='btn btn-outline btn-error join-item'>
+                        <i class='ri-delete-bin-6-fill'></i>
+                    </button>
+                    {{/if}}
                 </div>
-            {{!-- {{/if}} --}}
-            
+            </div>
         </div>
     </article>
     {{/each}}
-
 </section>
 
-<div class="flex justify-end items-center py-4 max-w-screen-xl">
+
+<div class='join gap-2 flex justify-end my-8 mx-auto' style="max-width: 1100px;">
     {{#if hasPrevPage}}
-        <a 
-            href="{{prevLink}}" 
-            class="inline-flex items-center px-4 py-2 mr-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 gap-2"
-        >
-            <i class="ri-arrow-left-line text-xl"></i>
-            Anterior
-        </a>
+    <a href='{{prevLink}}' class='btn normal-case text-sm'>
+        <i class='ri-arrow-left-line text-xl'></i>
+        Anterior
+    </a>
     {{/if}}
     {{#if hasNextPage}}
-        <a 
-            href="{{nextLink}}"
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 gap-2"
-        >
-            Siguiente
-            <i class="ri-arrow-right-line text-xl"></i>
-        </a>
+    <a href='{{nextLink}}' class='btn normal-case text-sm'>
+        Siguiente
+        <i class='ri-arrow-right-line text-xl'></i>
+    </a>
     {{/if}}
 </div>
