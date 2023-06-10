@@ -28,7 +28,7 @@
             </a>
         </div>
                     
-        <div class='flex items-center gap-4 font-medium'>
+        <div class='flex items-center gap-1 font-medium'>
             <a href='/products' class='btn btn-ghost text-sm normal-case'>
                 Inicio
             </a>
@@ -37,13 +37,16 @@
                 Crear producto
             </a>
             {{/if}}
-            
-            <a href='/sessions/logout' class='btn btn-outline btn-neutral text-sm normal-case'>
-                Cerrar sesión
-            </a>
-            <a href='/carts' class='btn btn-ghost font-normal'>
-                <i class='ri-shopping-cart-2-fill text-xl'></i>
-            </a>
+            <div class="tooltip tooltip-bottom" data-tip="Cerrar sesión">
+                <a href='/sessions/logout' class='btn btn-ghost font-normal'>
+                    <i class="ri-logout-box-r-line text-xl"></i>
+                </a>
+            </div>
+            <div class="tooltip tooltip-bottom" data-tip="Ir al carrito">
+                <a href='/carts' class='btn btn-ghost font-normal'>
+                    <i class='ri-shopping-cart-2-fill text-xl'></i>
+                </a>
+            </div>
         </div>
     </nav>
     {{/if}}

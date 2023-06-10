@@ -44,22 +44,19 @@
 {{else}}
 <section class="hero min-h-screen" style="background-image: url(../banner.jpg);">
     <div class="hero-overlay bg-opacity-60"></div>
-    <div class="hero-content text-center text-neutral-content">
-        <div >
-            <p class="text-lg font-bold"> Bienvenido, <span class="capitalize">{{username}}</span></p> 
-            <h1 class="mb-5 text-5xl">¡Elige tu pasión y viste tu equipo!</h1>
-            <p class="text-sm">
-                Descubre nuestra colección de camisetas de fútbol auténticas y muestra tu apoyo incondicional. <br>
-                Con materiales de calidad y diseños emblemáticos, lleva el espíritu del fútbol en tu estilo. <br>
-                ¡Únete a nosotros y celebremos juntos el deporte más apasionante del mundo!
-            </p>
-        </div>
+    <div class="hero-content flex-col text-center text-neutral-content">
+        <h1 class="text-5xl"> Hola, <span class="capitalize">{{username}}</span></h1>
+        <p class="text-md">
+            Descubre nuestra colección de camisetas de fútbol auténticas y muestra tu apoyo incondicional. <br>
+            Con materiales de calidad y diseños emblemáticos, lleva el espíritu del fútbol en tu estilo. <br>
+            ¡Únete a nosotros y celebremos juntos el deporte más apasionante del mundo!
+        </p>
     </div>
 </section>
 {{/if}}
 
 <section class='products'>
-    {{#each docs}}
+    {{#each data.docs}}
     <article class='card bg-base-100 shadow-xl'>
         <a href='/products/{{this.title}}'>
             <img src={{ this.thumbnail }} alt={{ this.title }}>
@@ -90,16 +87,16 @@
 
 
 <div class='join gap-2 flex justify-end my-8 mx-auto' style="max-width: 1100px;">
-    {{#if hasPrevPage}}
-    <a href='{{prevLink}}' class='btn normal-case text-sm'>
-        <i class='ri-arrow-left-line text-xl'></i>
-        Anterior
+    <a 
+        class="btn normal-case text-sm {{#if data.hasPrevPage}} {{else}}btn-disabled{{/if}}"
+        href="/products?page={{data.prevPage}}"
+    >
+        <i class='ri-arrow-left-line'></i>
     </a>
-    {{/if}}
-    {{#if hasNextPage}}
-    <a href='{{nextLink}}' class='btn normal-case text-sm'>
-        Siguiente
-        <i class='ri-arrow-right-line text-xl'></i>
+    <a 
+        class="btn normal-case text-sm {{#if data.hasNextPage}} {{else}}btn-disabled{{/if}}"
+        href="/products?page={{data.nextPage}}"
+    >
+        <i class='ri-arrow-right-line'></i>
     </a>
-    {{/if}}
 </div>

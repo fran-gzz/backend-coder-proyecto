@@ -60,16 +60,15 @@ router.put('/:id', async (req, res) => {
 
 router.get('/', auth, async ( req, res ) => {
 
-    let page = parseInt( req.query.page ) || 1;
+    let page = parseInt( req.query?.page ) || 1;
     
     const products = await productModel.paginate({}, { page, limit: 6, lean: true})
     const user = req.session.user
 
     let isAdmin = false;
 
-    if ( user?.role === 'admin' ) {
-        isAdmin = true
-    }
+    if ( user?.role === 'admin' ) isAdmin = true
+    
 
     products.docs = products.docs.map( product => {
         return {...product, isAdmin}
@@ -78,11 +77,7 @@ router.get('/', auth, async ( req, res ) => {
 
     res.render('products', {
         pageTitle: 'Productos',
-        docs: products.docs,
-        hasPrevPage: products.hasPrevPage,
-        hasNextPage: products.hasNextPage,
-        prevLink: products.hasPrevPage ? `/products?page=${ products.prevPage }` : '',
-        nextLink: products.hasNextPage ? `/products?page=${ products.nextPage }` : '',
+        data: products,
         isLoggedIn: true,
         isAdmin: isAdmin,
         username: user.username
