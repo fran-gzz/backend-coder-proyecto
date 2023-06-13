@@ -9,6 +9,7 @@ import initializePassport from './utils/passport.config.js';
 import productsRouter from './routes/products.router.js'
 import cartsRouter from './routes/cart.router.js'
 import sessionRouter from './routes/session.router.js'
+import adminRouter from './routes/admin.router.js'
 
 
 const app = express();
@@ -39,7 +40,11 @@ initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 
-
+// Middleware para validar si el usuario está logueado
+app.use((req, res, next) => {
+    res.locals.loggedIn = req.session.user ? true : false;
+    next()
+})
 
 // Redirect a ruta de productos
 app.get('/', (req, res) => {
@@ -55,13 +60,15 @@ app.use('/carts', cartsRouter)
 // Ruta de sesiones
 app.use('/sessions', sessionRouter)
 
+app.use('/admin', adminRouter)
+
 const PORT = 8080
 
 mongoose.set('strictQuery', false)
 
 try {
     await mongoose.connect('mongodb+srv://admin:nVmcprqyKBizD14o@ecommerce.suvajub.mongodb.net/ecommerce')
-    app.listen( PORT, () => console.log(`Server up on port ${ PORT }`));
+    app.listen( PORT, () => console.log(`Server up. \nListening on http://localhost:${ PORT }`));
 } catch ( error ){
     console.log(`No se pudo conectar con la base de datos: \n${ error }`)
 }

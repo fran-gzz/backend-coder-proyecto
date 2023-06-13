@@ -19,37 +19,45 @@
     <title>{{pageTitle}}</title>
 </head>
 <body>
-    
-    {{#if isLoggedIn}}
     <nav class='navbar bg-base-100 px-4 w-full fixed z-10 border-b border-base-200 shadow-sm'>
         <div class='flex-1'>
             <a href='/products' class='btn btn-ghost normal-case text-xl'>
                 Store
             </a>
         </div>
-                    
+    {{#if loggedIn}}
         <div class='flex items-center gap-1 font-medium'>
             <a href='/products' class='btn btn-ghost text-sm normal-case'>
                 Inicio
             </a>
             {{#if isAdmin}}
-            <a href='/products/create' class='btn btn-ghost text-sm normal-case'>
-                Crear producto
+            <a href='/admin/products' class='btn btn-ghost text-sm normal-case'>
+                Panel de control
             </a>
             {{/if}}
             <div class="tooltip tooltip-bottom" data-tip="Cerrar sesión">
                 <a href='/sessions/logout' class='btn btn-ghost font-normal'>
-                    <i class="ri-logout-box-r-line text-xl"></i>
+                    <i class="ri-logout-box-r-line"></i>
                 </a>
             </div>
             <div class="tooltip tooltip-bottom" data-tip="Ir al carrito">
                 <a href='/carts' class='btn btn-ghost font-normal'>
-                    <i class='ri-shopping-cart-2-fill text-xl'></i>
+                    <i class='ri-shopping-cart-2-fill'></i>
                 </a>
             </div>
         </div>
-    </nav>
+        {{else}}
+        <div class='flex items-center gap-1 font-medium'>    
+            <a href='/sessions/login' class='btn btn-ghost text-sm normal-case'>
+                Iniciar sesión
+            </a>
+            <a href='/sessions/register' class='btn btn-ghost text-sm normal-case'>
+                Regístrate
+            </a>
+        </div>
     {{/if}}
+    </nav>
+    
     
     <main class='bg-base-100'>
         {{{ body }}}

@@ -9,54 +9,7 @@ const auth = (req, res, next ) => {
     return res.redirect('/sessions/login')
 }
 
-
-// Create
-router.get('/create', auth, (req, res) => {
-
-    const user = req.session.user
-    let isAdmin = false;
-    if ( user?.role === 'admin' ) {
-        isAdmin = true
-    }
-
-    res.render('create', {
-        pageTitle: 'Crear un nuevo producto',
-        isLoggedIn: true,
-        isAdmin: isAdmin
-    })
-})
-router.post('/', async (req, res) => {
-    const product = req.body;
-    const newProduct = new productModel( product )
-    await newProduct.save();
-    res.redirect('/products')
-})
-
-// Update
-router.get('/update/:id', async (req, res) => {
-    const _id = req.params.id;
-    const product = await productModel.findById({_id}).lean().exec();
-    const user = req.session.user
-    let isAdmin = false;
-    if ( user?.role === 'admin' ) {
-        isAdmin = true
-    }
-    res.render('update', { 
-        pageTitle: "Actualizar producto",
-        product,
-        isLoggedIn: true,
-        isAdmin: isAdmin
-    })
-})
-router.put('/:id', async (req, res) => {
-    const _id = req.params.id;
-    const productNewData = req.body
-    await productModel.findByIdAndUpdate({ _id }, { ...productNewData })
-})
-
-
 // Read
-
 
 router.get('/', auth, async ( req, res ) => {
 
@@ -68,46 +21,31 @@ router.get('/', auth, async ( req, res ) => {
     let isAdmin = false;
 
     if ( user?.role === 'admin' ) isAdmin = true
-    
 
     products.docs = products.docs.map( product => {
         return {...product, isAdmin}
     })
     
-
     res.render('products', {
         pageTitle: 'Productos',
         data: products,
-        isLoggedIn: true,
         isAdmin: isAdmin,
         username: user.username
     })
 })
 
 
-router.get('/:title', auth, async(req, res) => {
-    
-    const title = req.params.title
-    const product = await productModel.findOne({title}).lean().exec()
+router.get('/:id', auth, async(req, res) => {
+    const product = await productModel.findOne({ _id: req.params.id }).lean().exec()
     
     const user = req.session.user
     const isAdmin = user?.role === 'admin';
 
     res.render('product', {
-        pageTitle: title,
+        pageTitle: product.title,
         product,
-        isLoggedIn: true,
         isAdmin
     })
-})
-
-
-
-// Delete
-router.delete('/:title', async (req, res) => {
-    const title = req.params.title
-    await productModel.deleteOne({ title })
-    res.send(`Producto con el ID [${title}] eliminado exitosamente`)
 })
 
 export default router;

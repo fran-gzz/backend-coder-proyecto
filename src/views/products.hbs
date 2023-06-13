@@ -1,37 +1,26 @@
 <script>
-    function deleteProduct(title) {
-        fetch(`http://localhost:8080/products/${title}`, {
-            method: 'delete'
-        })
-        window.location.href = 'http://localhost:8080/products'
-    }
-    function AddToCart(id) {
-        fetch(`http://localhost:8080/carts/add/${id}`, {
+    function AddToCart( id ) {
+        fetch(`http://localhost:8080/carts/add/${ id }`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json', }
         })
-            .then((response) => response.json())
-            .then((data) => {
-                // Mostrar notificación de éxito
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Producto agregado al carrito',
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                // Mostrar notificación de error
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se puedo agregar el producto al carrito.',
-                });
+        .then( response => response.json())
+        .then( data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Producto agregado al carrito',
+                showConfirmButton: false,
+                timer: 1500,
             });
+        })
+        .catch( error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se puedo agregar el producto al carrito.',
+            });
+        });
     }
 </script>
 
@@ -58,28 +47,18 @@
 <section class='products'>
     {{#each data.docs}}
     <article class='card bg-base-100 shadow-xl'>
-        <a href='/products/{{this.title}}'>
+        <a href='/products/{{this._id}}'>
             <img src={{ this.thumbnail }} alt={{ this.title }}>
         </a>
         <div class='card-body p-2'>
             <h2 class='card-title text-sm'>{{ this.title }}</h2>
             <p class='text-sm'>${{this.price}}</p>
-            <div class='join gap-2 w-full justify-between'>
-                <button onclick="AddToCart('{{this._id}}')"
-                    class='btn btn-neutral normal-case {{#if this.isAdmin}} {{else}} btn-wide{{/if}}'>
-                    Añadir al carrito
-                </button>
-                <div class="join gap-2">
-                    {{#if this.isAdmin}}
-                    <a href='/products/update/{{this._id}}' class='btn btn-outline btn-success join-item'>
-                        <i class='ri-pencil-fill'></i>
-                    </a>
-                    <button onclick='deleteProduct(' {{this.title}}')' class='btn btn-outline btn-error join-item'>
-                        <i class='ri-delete-bin-6-fill'></i>
-                    </button>
-                    {{/if}}
-                </div>
-            </div>
+            <button 
+                onclick="AddToCart('{{this._id}}')"
+                class="btn btn-neutral normal-case w-full"
+            >
+                Añadir al carrito
+            </button>
         </div>
     </article>
     {{/each}}

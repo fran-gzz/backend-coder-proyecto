@@ -1,35 +1,28 @@
 <script>
-    function AddToCart(id) {
-        fetch(`http://localhost:8080/carts/add/${id}`, {
+    function AddToCart( id ) {
+        fetch(`http://localhost:8080/carts/add/${ id }`, {
             method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json', }
         })
-        .then((response) => response.json())
-        .then((data) => {
-        // Mostrar notificación de éxito
-        Swal.fire({
-            icon: 'success',
-            title: 'Producto agregado al carrito',
-            showConfirmButton: false,
-            timer: 1500,
-        });
-        console.log(data);
+        .then( response => response.json())
+        .then( data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Producto agregado al carrito',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         })
-        .catch((error) => {
-        console.error('Error:', error);
-        // Mostrar notificación de error
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se puedo agregar el producto al carrito.',
-        });
+        .catch( error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se puedo agregar el producto al carrito.',
+            });
         });
     }
 </script>
-
-
 
 <div class="min-h-screen flex items-center justify-center bg-base-100 mx-auto " style="max-width: 1100px;" >
     <div class="hero-content flex-col lg:flex-row gap-4">

@@ -1,6 +1,6 @@
 <script>
     function updateProduct(id) {
-    fetch(`http://localhost:8080/products/${id}`, {
+    fetch(`http://localhost:8080/admin/products/${id}`, {
         method: 'put',
         body: JSON.stringify({
             title: document.getElementById('title').value,
@@ -13,7 +13,7 @@
             'Content-Type': 'application/json'
         }
     })
-    window.location.href='http://localhost:8080/products'
+    window.location.href='http://localhost:8080/admin/products'
 }
 </script>
 

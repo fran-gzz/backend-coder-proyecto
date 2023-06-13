@@ -1,0 +1,59 @@
+<script>
+    function deleteProduct(title) {
+        fetch(`http://localhost:8080/admin/products/${title}`, {
+            method: 'delete'
+        })
+        window.location.href = 'http://localhost:8080/admin/products'
+    }
+</script>
+
+<section style="max-width: 1100px;" class="p-2 flex flex-col justify-center items-center mx-auto min-h-screen pt-28">
+
+    <h1 class="text-2xl text-center">
+        Admin Panel
+    </h1>
+
+    <article class="flex justify-between w-full my-10" style="max-width: 1100px;">
+        <div class="tabs">
+            <a href="/admin/products" class="tab tab-active">Productos</a> 
+            <a href="/admin/users" class="tab">Usuarios</a>
+        </div>
+        <a href="/admin/products/create" class="btn btn-neutral normal-case">Crear nuevo producto</a>
+    </article>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th> Producto </th><th> ID </th><th> Título </th><th> Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data}}
+                <tr class="hover">
+                    <th>
+                        <a href="/products/{{this._id}}">    
+                            <img src="{{this.thumbnail}}" class="w-12 h-12 rounded-full" alt="{{this.title}}">
+                        </a>
+                    </th>
+                    <td>
+                        {{this._id}}
+                    </td>
+                    <td>
+                        <a href="/products/{{this._id}}">
+                            {{this.title}}
+                        </a>
+                    </td>
+                    <td class="flex"> 
+                        <a href="/admin/products/update/{{this._id}}" class='btn btn-outline font-normal btn-success'>
+                            <i class='ri-pencil-line'></i>
+                        </a>
+                        <div class="divider divider-horizontal"></div>
+                        <button class="btn btn-outline font-normal btn-error" onclick="deleteProduct('{{this.title}}')">
+                            <i class='ri-delete-bin-6-line'></i>
+                        </button>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</section>
