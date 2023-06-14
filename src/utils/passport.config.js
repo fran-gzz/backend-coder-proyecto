@@ -21,7 +21,7 @@ const initializePassport = () => {
                 return done(null, false)
             }
             const newUser = {
-                first_name, last_name, email, age,
+                first_name, last_name, email, age, role: 'user',
                 password: createHash( password )
             }
 
@@ -30,6 +30,7 @@ const initializePassport = () => {
 
         } catch( err ) {
             return done('Error al leer la base de datos.')
+            
         }
     }))
     

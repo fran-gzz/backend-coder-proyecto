@@ -1,0 +1,60 @@
+{{!-- <script>
+    function deleteProduct(title) {
+        fetch(`http://localhost:8080/admin/products/${title}`, {
+            method: 'delete'
+        })
+        window.location.href = 'http://localhost:8080/admin/products'
+    }
+</script> --}}
+
+<section style="max-width: 1100px;" class="p-2 flex flex-col justify-center items-center mx-auto min-h-screen pt-28">
+
+    <h1 class="text-2xl text-center">
+        Admin Panel
+    </h1>
+
+    <article class="flex w-full my-10" style="max-width: 1100px;">
+        <div class="tabs">
+            <a href="/admin/products" class="tab">Productos</a> 
+            <a href="/admin/users" class="tab tab-active">Usuarios</a>
+        </div>
+    </article>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th> Nombre </th><th> Email </th> <th> Rol </th> <th> Edad </th><th> Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data}}
+                <tr class="hover">
+                    <th>
+                        {{this.first_name}} {{this.last_name}}
+                    </th>
+                    <td>
+                        {{this.email}}
+                    </td>
+                    <td>
+                        {{this.role}}
+                    </td>
+                    <td>
+                        {{this.age}}
+                    </td>
+                    <td class="flex"> 
+                        <a href="/admin/products/update/{{this._id}}" class='btn btn-outline font-normal btn-success'>
+                            <i class='ri-pencil-line'></i>
+                        </a>
+                        <div class="divider divider-horizontal"></div>
+                        {{!-- <button class="btn btn-outline font-normal btn-error" onclick="deleteProduct('{{this.title}}')">
+                            <i class='ri-delete-bin-6-line'></i>
+                        </button> --}}
+                        <button class="btn btn-outline font-normal btn-error">
+                            <i class='ri-delete-bin-6-line'></i>
+                        </button>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</section>

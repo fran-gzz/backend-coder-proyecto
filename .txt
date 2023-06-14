@@ -1,0 +1,3 @@
+ADMIN:
+email: admin@coder.com
+password: admincoder123

@@ -39,17 +39,9 @@ router.post('/login', passport.authenticate('login', {
     if (!req.user) {
         return res.status(400).send({ status: 'error', error: 'Credenciales invalidas.' })
     }
-
-    if( req.user.email === 'admin@coder.com' ) {
-        req.session.user = {
-            username: req.user.first_name,
-            role: 'admin'
-        }
-    } else {
-        req.session.user = {
-            username: req.user.first_name,
-            role: 'user'
-        }
+    req.session.user = {
+        username: req.user.first_name,
+        role: req.user.role
     }
     res.redirect('/products')
 })

@@ -40,11 +40,14 @@ initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Middleware para validar si el usuario está logueado
 app.use((req, res, next) => {
+    // Valida si el usuario está logueado
     res.locals.loggedIn = req.session.user ? true : false;
-    next()
-})
+    // Valida si el usuario es administrador
+    res.locals.isAdmin = req.session.user?.role === 'admin' ? true : false;
+    next();
+});
+
 
 // Redirect a ruta de productos
 app.get('/', (req, res) => {
