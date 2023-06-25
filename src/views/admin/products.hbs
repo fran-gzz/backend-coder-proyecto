@@ -1,6 +1,6 @@
 <script>
-    function deleteProduct(title) {
-        fetch(`http://localhost:8080/admin/products/${title}`, {
+    function deleteProduct(_id) {
+        fetch(`http://localhost:8080/admin/products/${_id}`, {
             method: 'delete'
         })
         window.location.href = 'http://localhost:8080/admin/products'
@@ -48,7 +48,7 @@
                             <i class='ri-pencil-line'></i>
                         </a>
                         <div class="divider divider-horizontal"></div>
-                        <button class="btn btn-outline font-normal btn-error" onclick="deleteProduct('{{this.title}}')">
+                        <button class="btn btn-outline font-normal btn-error" onclick="deleteProduct('{{this._id}}')">
                             <i class='ri-delete-bin-6-line'></i>
                         </button>
                     </td>
