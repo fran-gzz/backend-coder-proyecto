@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
 
 const cartsSchema = new mongoose.Schema({
+    length: {
+        type: Number,
+        default: 0
+    },
     products: [{
         product: {
             type: mongoose.Schema.Types.ObjectId,

@@ -31,7 +31,7 @@
     <h1 class="text-2xl text-center mb-10">
         Carrito
     </h1>
-    {{#if docs.length}}
+    {{#if data.length}}
     <div class="self-end my-4 flex flex-row gap-2">
         <button onclick="cleanCart()" class="btn btn-error">
             Vaciar carrito
@@ -52,15 +52,15 @@
             </tr>
         </thead>
         <tbody>
-            {{#each docs}}
+            {{#each data}}
                 <tr class="hover">
                     <th>
-                        <a href="/products/{{this.product.title}}">    
+                        <a href="/products/{{this.product._id}}">    
                             <img src="{{this.product.thumbnail}}" class="w-24 h-24 rounded-full" alt="{{this.product.title}}">
                         </a>
                     </th>
                     <td>
-                        <a href="/products/{{this.product.title}}">
+                        <a href="/products/{{this.product._id}}">
                             {{this.product.title}}
                         </a>
                     </td>
