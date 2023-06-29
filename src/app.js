@@ -12,6 +12,10 @@ import sessionRouter from './routes/session.router.js'
 import adminRouter from './routes/admin.router.js'
 
 
+
+import 'dotenv/config.js'
+
+
 const app = express();
 
 app.use(express.json());
@@ -27,8 +31,8 @@ app.use(express.static('./src/public'))
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://admin:nVmcprqyKBizD14o@ecommerce.suvajub.mongodb.net",
-        dbName: 'ecommerce'
+        mongoUrl: process.env.MONGO_URL,
+        dbName: process.env.MONGO_NAME
     }),
     secret: 'supersecret',
     resave: true,
@@ -65,13 +69,14 @@ app.use('/sessions', sessionRouter)
 
 app.use('/admin', adminRouter)
 
-const PORT = 8080
-
-mongoose.set('strictQuery', false)
 
 try {
-    await mongoose.connect('mongodb+srv://admin:nVmcprqyKBizD14o@ecommerce.suvajub.mongodb.net/ecommerce')
-    app.listen( PORT, () => console.log(`Server up. \nListening on http://localhost:${ PORT }`));
-} catch ( error ){
-    console.log(`No se pudo conectar con la base de datos: \n${ error }`)
-}
+    await mongoose.connect( process.env.MONGO_URL, {
+        dbName: process.env.MONGO_NAME,
+    })
+    console.log('DB Connected.')
+    app.listen( 
+        process.env.PORT , () => {
+            console.log(`Listening on http://localhost:${ process.env.PORT }`)
+        });
+} catch ( error ) { console.log('Hubo un error al conectarse con la base de datos.')}
