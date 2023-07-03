@@ -30,9 +30,10 @@ export const createProduct = async ( req, res ) => {
 /**     READ     **/
 export const getProducts = async ( req, res ) => {
     let page = parseInt( req.query?.page ) || 1;
+
     try {
         const products = await productModel.paginate({}, { page, limit: 6, lean: true })
-        const user = req.session.user
+        const user = req.user
         res.status( 200 ).render('products', {
             ok: true,
             pageTitle: 'Productos',

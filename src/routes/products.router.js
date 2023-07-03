@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { getProducts, getProductById } from '../controllers/products.controller.js';
 
+import { passportCall, authorization } from '../helpers/utils.js';
+
 const router = Router();
 
-router.use(( req, res, next ) => req.session.user 
-    ? next()
-    : res.redirect('/sessions/login')
-)
+router.use( passportCall('jwt'), authorization('admin') )
 router.get( '/', getProducts )
 router.get( '/:id', getProductById )
 

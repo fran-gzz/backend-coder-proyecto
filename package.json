@@ -1,6 +1,6 @@
 {
   "name": "back-coder-proyecto",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Proyecto del curso de backend de Coderhouse.",
   "main": "src/app.js",
   "type": "module",
@@ -14,14 +14,15 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "connect-mongo": "^5.0.0",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-handlebars": "^7.0.7",
-    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.0",
     "mongoose-paginate-v2": "^1.7.1",
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
-    "passport-local": "^1.0.0"
+    "passport-jwt": "^4.0.1"
   }
 }
