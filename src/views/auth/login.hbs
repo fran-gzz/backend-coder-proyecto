@@ -3,7 +3,7 @@
         <h1 class='text-2xl text-center mb-10'>
             Iniciar sesión
         </h1>
-        <form class='w-full flex flex-col gap-8' action='/sessions/login' method='post'>
+        <form class='w-full flex flex-col gap-8' action='/auth/login' method='post'>
             <input type='email' name='email' class='input input-bordered w-full' placeholder='Email' required>
             <input type='password' name='password' class='input input-bordered w-full' placeholder='Contraseña' required>
             <button type='submit' class='btn btn-primary text-primary hover:text-base-100'>
@@ -11,9 +11,9 @@
             </button>
         </form>
         <p class='text-center pt-4'>
-            ¿Aún no tienes cuenta? <a class='text-primary font-bold' href='/sessions/register'>Regístrate.</a>
+            ¿Aún no tienes cuenta? <a class='text-primary font-bold' href='/auth/register'>Regístrate.</a>
         </p>
         <div class='divider'> O </div>
-        <a href='/sessions/github' class='btn btn-neutral'> Ingresa con Github </a>
+        <a href='/auth/github' class='btn btn-neutral'> Ingresa con Github </a>
     </article>
 </section>

@@ -5,9 +5,9 @@
 
 - Reemplazar la autenticación del proyecto con **express-session** por **jsonwebtoken**. ✅
 - Refactorizar el código que haga uso de **express-session**.
-- Realizar un controller para la ruta de autenticación
+- Realizar un controller para la ruta de autenticación. ✅
 - Corregir el inicio de sesión con GITHUB y su posterior cierre.
-- Renombrar la ruta de "sessions" con algo más genérico, como "auth"
+- Renombrar la ruta de "sessions" con algo más genérico, como "auth". ✅
 - Dentro del middleware *"authorization"*, se deben establecer las respectivas autorizaciones, de manera tal que:
 -- La ruta de productos sea **PUBLICA**.
 -- La ruta del carrito de compras deberá estar disponible solo para usuarios  **AUTENTICADOS** (admin/user).

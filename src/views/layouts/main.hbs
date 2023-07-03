@@ -36,7 +36,7 @@
             </a>
             {{/if}}
             <div class="tooltip tooltip-bottom" data-tip="Cerrar sesión">
-                <a href='/sessions/logout' class='btn btn-ghost font-normal'>
+                <a href='/auth/logout' class='btn btn-ghost font-normal'>
                     <i class="ri-logout-box-r-line"></i>
                 </a>
             </div>
@@ -48,10 +48,10 @@
         </div>
         {{else}}
         <div class='flex items-center gap-1 font-medium'>    
-            <a href='/sessions/login' class='btn btn-ghost text-sm normal-case'>
+            <a href='/auth/login' class='btn btn-ghost text-sm normal-case'>
                 Iniciar sesión
             </a>
-            <a href='/sessions/register' class='btn btn-ghost text-sm normal-case'>
+            <a href='/auth/register' class='btn btn-ghost text-sm normal-case'>
                 Regístrate
             </a>
         </div>

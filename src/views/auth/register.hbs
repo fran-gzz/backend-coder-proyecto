@@ -3,7 +3,7 @@
         <h1 class='text-2xl text-center mb-10'>
             Registrar usuario
         </h1>
-        <form class='w-full flex flex-col gap-8' action='/sessions/register' method='post'>
+        <form class='w-full flex flex-col gap-8' action='/auth/register' method='post'>
             <div class='join gap-2'>
                 <input type='text' name='first_name' class='input input-bordered w-full max-w-xs' placeholder='Nombre' required>
                 <input type='text' name='last_name' class='input input-bordered w-full max-w-xs' placeholder='Apellido' required>
@@ -18,7 +18,7 @@
             </button>
         </form>
         <p class='text-center pt-4'>
-            ¿Ya tienes una cuenta? <a class='text-primary font-bold' href='/sessions/login'>Inicia sesión.</a>
+            ¿Ya tienes una cuenta? <a class='text-primary font-bold' href='/auth/login'>Inicia sesión.</a>
         </p>
     </article>
 </section>

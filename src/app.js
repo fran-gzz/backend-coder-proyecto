@@ -6,7 +6,7 @@ import initializePassport from './helpers/passport.config.js';
 
 import productsRouter from './routes/products.router.js'
 import cartsRouter from './routes/cart.router.js'
-import sessionRouter from './routes/session.router.js'
+import authRouter from './routes/auth.router.js'
 import adminRouter from './routes/admin.router.js'
 
 
@@ -37,11 +37,11 @@ app.use(passport.initialize())
 
 // Redirect a ruta de login
 app.get('/', (req, res) => {
-    res.redirect('/sessions/login')
+    res.redirect('/auth/login')
 })
 
 // Ruta de sesiones
-app.use('/sessions', sessionRouter)
+app.use('/auth', authRouter)
 
 // Ruta de productos
 app.use('/products', productsRouter)
