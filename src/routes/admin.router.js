@@ -6,12 +6,8 @@ import { createProduct, deleteProduct, updateProduct } from "../controllers/prod
 
 const router = Router()
 
-const auth = (req, res, next) => {
-    if(req.session.user.role === 'admin') return next()
-    return res.redirect('/products')
-}
 
-router.use(auth)
+
 
 router.get('/', (req, res) => res.redirect('/admin/products'))
 
