@@ -2,39 +2,30 @@ import express from 'express'
 import mongoose from 'mongoose';
 import passport from 'passport';
 import initializePassport from './helpers/passport.config.js';
-
-import productsRouter from './routes/products.router.js'
-import cartsRouter from './routes/cart.router.js'
-import authRouter from './routes/auth.router.js'
-
-import 'dotenv/config.js'
 import cookieParser from 'cookie-parser';
-
+import cors from 'cors'
+import { authRouter, productsRouter, cartRouter } from './routes/router.js';
+import 'dotenv/config.js'
 
 const app = express();
 
+// Configuraciones 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Cookie parser
 app.use(cookieParser())
-
-// Archivos estáticos
-app.use(express.static('./src/public'))
+app.use(cors())
+app.use(express.static('./src/public' ))
 
 // Passport
 initializePassport()
 app.use(passport.initialize())
 
-// Ruta de sesiones
-app.use('/auth', authRouter)
+// Rutas
+app.use('/api/auth', authRouter )
+app.use('/api/products', productsRouter )
+app.use('/api/carts', cartRouter )
 
-// Ruta de productos
-app.use('/products', productsRouter)
-
-// Ruta del carrito
-app.use('/carts', cartsRouter)
-
+// Conexión a base de datos y al localhost
 try {
     await mongoose.connect( process.env.MONGO_URL, {
         dbName: process.env.MONGO_NAME,
