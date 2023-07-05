@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { userRegister, userLogin, userLogout, userLoginView, userRegisterView } from '../controllers/auth.controller.js'
+import { userRegister, userLogin, userLogout } from '../controllers/auth.controller.js'
 
 const router = Router()
 
@@ -9,12 +9,9 @@ router.get('/', async (req, res) => {
 })
 
 // Registro
-router.get('/register', userRegisterView ) // Vista del Register (temporal)
 router.post( '/register', userRegister )
 
-
 // Login
-router.get( '/login', userLoginView ) // Vista del Login (temporal)
 router.post( '/login', userLogin )
 
 

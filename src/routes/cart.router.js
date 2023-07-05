@@ -4,10 +4,6 @@ import { cleanCart, deleteById, getCart, saveToCart } from '../controllers/cart.
 
 const router = Router();
 
-router.use((req, res, next) => req.session.user
-    ? next()
-    : res.redirect('/sessions/login')
-)
 /*      Create      */
 router.post('/add/:id', saveToCart);
 

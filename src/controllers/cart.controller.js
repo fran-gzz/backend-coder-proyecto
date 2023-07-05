@@ -54,16 +54,15 @@ export const saveToCart = async ( req, res ) => {
 
         await cart.save()
         
-        console.log(`Se agregó al carrito el producto con el id: ${ _id }`);
         res.status( 200 ).json({
             ok: true,
             title: 'Producto agregado al carrito.',
             message: `Se agregó al carrito el producto con el id: ${ _id }`
         })
     } catch( error ){
-        console.log( error )
         res.status( 500 ).json({
             ok: false,
+            status: 500,
             title: 'Error interno del servidor (HTTP 500).',
             message: 'Lamentamos el inconveniente, estamos trabajando para solucionarlo pronto.'
         })
@@ -74,16 +73,15 @@ export const getCart = async ( req, res ) => {
     try {
         const cart = await cartModel.findOne().populate('products').lean().exec();
 
-        console.log(`Cantidad de productos en el carrito: ${cart?.length}`);
-
         const docs = cart?.products || []; // Verifica si el carrito está vacío, de ser así se le asigna un array vacío como valor.
-        res.render('cart', { 
-            pageTitle: 'Carrito',
-            data: docs,
+        res.status( 200 ).json({ 
+            ok: true,
+            status: 200,
+            data: docs
         });
 
     } catch( error ){
-        console.log( error )
+        
         res.status( 500 ).json({
             ok: false,
             title: 'Error interno del servidor (HTTP 500).',
@@ -107,7 +105,6 @@ export const cleanCart = async ( req, res ) => {
   
         await cartModel.findOneAndDelete({});
 
-        console.log(`Carrito vaciado exitosamente.`);
         res.status(200).json({ 
             ok: true,
             title: 'Carrito eliminado',
@@ -158,8 +155,6 @@ export const deleteById = async ( req, res ) => {
         cart.length = length;
 
         await cart.save();
-  
-        console.log(`Producto eliminado con el ID: ${ id }`);
       
         res.status(200).json({ 
             ok: true,

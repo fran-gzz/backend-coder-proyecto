@@ -17,11 +17,15 @@ export const createProduct = async (req, res) => {
         let result = await productsService.createProduct( product )
         res.status(201).json({
             ok: true,
+            status: 201,
             title: 'Producto creado.',
-            message: `Se creó el producto con el ID: ${result._id}.`,
+            message: `Se creó el producto con el ID: ${ result._id }.`,
         })
     } catch ( error ){ serverErrorResponse( res, 500 )}
 }
+
+
+
 
 /**     READ     **/
 export const getProducts = async (req, res) => {
@@ -29,9 +33,9 @@ export const getProducts = async (req, res) => {
     let limit = 6;
     try {
         const products = await productsService.getProducts( page, limit );
-        res.status(200).render('products', {
+        res.status(200).json({
             ok: true,
-            pageTitle: 'Productos',
+            status: 200,
             data: products,
         })
     } catch ( error ){ serverErrorResponse( res, 500 )}
@@ -45,10 +49,10 @@ export const getProductById = async (req, res) => {
         if ( product === 'no-data' ) {
             return serverErrorResponse( res, 404 )
         } else {
-            res.status(200).render('product', {
+            res.status( 200 ).json({
                 ok: true,
-                pageTitle: product.title,
-                product
+                status: 200,
+                data: product
             })
         }
     } catch ( error ){ serverErrorResponse( res, 500 )}
@@ -84,6 +88,7 @@ export const deleteProduct = async (req, res) => {
             let result = await productsService.deleteProduct( product._id )
             res.status(200).json({
                 ok: true,
+                status: 200,
                 title: 'Producto eliminado.',
                 message: `Se eliminó el producto con el ID: ${result.id}.`,
             })
