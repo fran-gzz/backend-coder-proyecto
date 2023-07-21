@@ -2,8 +2,6 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport'
 
-
-
 export const createHash = password => {
     return bcrypt.hashSync( password, bcrypt.genSaltSync(10) )
 }
@@ -13,8 +11,49 @@ export const isValidPassword = ( user, password ) => {
 }
 
 export const generateToken = user => {
-    return jwt.sign({ user }, process.env.JWT_PRIVATE_KEY, { expiresIn: '2h' })
+    return new Promise(( resolve, reject ) => {
+        const payload = { user };
+        jwt.sign( payload, process.env.JWT_PRIVATE_KEY, {
+            expiresIn: '2h'
+        }, ( err, token ) => {
+            if( err ) {
+                console.log( err );
+                reject('No se pudo generar el token.')
+            }
+            resolve( token );
+        })
+    }) 
 }
+
+export const validateToken = ( req, res, next ) => {
+
+    const token = req.header('x-token')
+
+    if( !token ){
+        return res.status( 401 ).json({
+            ok: false,
+            message: 'No hay token en la petición...'
+        })
+    }
+    try {
+        const { user } = jwt.verify(
+            token,
+            process.env.JWT_PRIVATE_KEY
+        )        
+        req.email = user.email
+        req.username = user.first_name
+        
+    } catch (error) {
+        return res.status( 401 ).json({
+            ok: false,
+            status: 201,
+            message: 'Token inválido.'
+        })
+    }
+
+    next()
+}
+
 
 export const extractCookie = req => {
     return ( req && req.cookies ) ? req.cookies[ process.env.COOKIE_NAME ] : null
@@ -67,4 +106,24 @@ export const authorization = role => {
 
         next()
     }
+}
+
+// Función para generar un código único de ticket
+export const generateCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = ''
+    for( let i = 0; i < 6; i++ ){
+        const random = Math.floor( Math.random() * chars.length )
+        code += chars[ random ]
+    }
+    return code;
+}
+
+// Función para calcular el valor total de la compra
+export const calculateAmount = ( products ) => {
+    let amount = 0;
+    for (const product of products ) {
+        amount += product.totalPrice;
+    }
+    return amount
 }

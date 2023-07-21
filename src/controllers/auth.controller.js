@@ -55,30 +55,74 @@ export const userLogin = async ( req, res ) => {
                 message: 'Email inválido.'
             })
         } else {
-            const token = generateToken( user );
-            user.token = token
-            res.cookie( process.env.COOKIE_NAME, user.token ).status( 200 ).json({
+
+            const name = user.first_name
+            const lastName = user.last_name
+            const initials = `${ name?.slice(0, 1)}${ lastName?.slice(0, 1)}`
+
+            const token = await generateToken( user );
+            res.status( 200 ).json({
                 ok: true,
                 status: 200,
-                title: 'Acción completada',
-                message: 'El usuario inició sesión satisfactoriamente.'
+                email: user.email,
+                uid: user._id,
+                username: name,
+                initials: initials,
+                fullname: `${ name } ${ lastName }`,
+                role: user.role,
+                token: token
             })
+            console.log('Inicio de sesión exitoso.');
         }
     } catch ( error ) { serverErrorResponse( res, 500 )}
+}
+
+
+export const renewToken = async ( req, res ) => {
+    const { email } = req;
+    try {
+        const user = await authService.getUserByEmail( email )
+        if ( !user ) {
+            return res.status( 400 ).json({
+                ok: false,
+                status: 400,
+                title: 'Error',
+                message: 'No se encontró un usuario con el email proporcionado.'
+            })
+        } else {
+            const name = user.first_name
+            const lastName = user.last_name
+            const initials = `${ name?.slice(0, 1)}${ lastName?.slice(0, 1)}`
+
+            const token = await generateToken( user );
+            res.status( 200 ).json({
+                ok: true,
+                status: 200,
+                email: user.email,
+                uid: user._id,
+                username: name,
+                initials: initials,
+                fullname: `${ name } ${ lastName }`,
+                role: user.role,
+                token: token
+            })
+            console.log('Datos del usuario renovados.');
+        }
+    } catch ( error ) { serverErrorResponse( res, 500 )}
+    
 }
 
 
 /**     LOGOUT     **/
 export const userLogout = ( req, res ) => {
     // TODO: Logout de Github
+    console.log('Sesión cerrada.')
     try {
-
         res.clearCookie( process.env.COOKIE_NAME ).status( 200 ).json({
             ok: true,
             status: 200,
             title: 'Acción completada',
             message: 'El usuario cerró sesión satisfactoriamente.'
         })
-
     } catch ( error ) { serverErrorResponse( res, 500 )}
 }

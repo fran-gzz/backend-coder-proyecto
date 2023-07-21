@@ -36,7 +36,7 @@ export const getProducts = async (req, res) => {
         res.status(200).json({
             ok: true,
             status: 200,
-            data: products,
+            result: products,
         })
     } catch ( error ){ serverErrorResponse( res, 500 )}
 }
@@ -52,7 +52,7 @@ export const getProductById = async (req, res) => {
             res.status( 200 ).json({
                 ok: true,
                 status: 200,
-                data: product
+                result: product
             })
         }
     } catch ( error ){ serverErrorResponse( res, 500 )}
