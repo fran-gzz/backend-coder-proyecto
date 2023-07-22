@@ -11,15 +11,22 @@ export const serverErrorResponse = ( res, status ) => {
             return res.status( status ).json({
                 ok: false,
                 status: status,
-                title: 'You shall not pass!',
-                message: 'El usuario no está autorizado para realizar esta acción.',
+                title: 'No autorizado',
+                message: 'Credenciales inválidas.',
+            });
+        case 403:
+            return res.status( status ).json({
+                ok: false,
+                status: status,
+                title: 'Acceso denegado',
+                message: 'El usuario no tiene permisos para realizar esta acción.',
             });
         case 404:
             return res.status( status ).json({
                 ok: false,
                 status: status,
                 title: 'Oops...',
-                message: `No existe elemento con el ID proporcionado.`,
+                message: 'No existe el elemento solicitado',
             });
         case 500:
             return res.status( status ).json({

@@ -10,8 +10,8 @@
 * ✅ Renombrar la ruta de "sessions" con algo más genérico, como "auth".
 * Dentro del middleware *"authorization"*, se deben establecer las respectivas autorizaciones, de manera tal que:
     * ✅ La ruta de productos sea **PUBLICA**.
-    * La ruta del carrito de compras deberá estar disponible solo para usuarios  **AUTENTICADOS** (user).
-    * La ruta del panel de control solo estará disponible para el **ADMINISTRADOR**.
+    * ✅ La ruta del carrito de compras deberá estar disponible solo para usuarios  **AUTENTICADOS** (user).
+    * ✅ La ruta del panel de control solo estará disponible para el **ADMINISTRADOR**.
 * ✅ Eliminar dependencias sin uso.
 * ✅ Personalizar las respuestas del servidor de modo que no haya código repetido.
 * ✅ Preparar la aplicación para separar el **front** del **back**.
@@ -27,10 +27,10 @@
 * ✅ Modificar la capa de persistencia para aplicar los conceptos de Factory (opcional), DAO y DTO.
 * ✅ Implementar el patrón Repository para trabajar con el DAO en la lógica de negocio.
 * ✅ Modificar la ruta /current para evitar enviar información sensible, enviar un DTO del usuario solo con información necesaria.
-* Realizar un middleware que pueda trabajar en conjunto con la estrategia "current" para hacer un sistema de autorización y delimitar el acceso a dichos endpoints:
-    * Solo el administrador puede crear, actualizar y eliminar productos. 
+* ✅ Realizar un middleware que pueda trabajar en conjunto con la estrategia "current" para hacer un sistema de autorización y delimitar el acceso a dichos endpoints:
+    * ✅ Solo el administrador puede crear, actualizar y eliminar productos. 
     * ❌ Solo el usuario puede enviar mensajes al chat (aún no hay chat en la aplicación)
-    * Solo el usuario puede agregar productos a su carrito
+    * ✅ Solo el usuario puede agregar productos a su carrito
 * ✅ Crear un modelo **Ticket**, el cual contará con tordas las formalizaciones de la compra. Este contará con los campos:
     * ✅ Id (autogenerado) 
     * ✅ code: String que debe autogenerarse y ser único 
