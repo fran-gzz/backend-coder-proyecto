@@ -1,6 +1,6 @@
 import passport from "passport";
 import passport_jwt from 'passport-jwt'
-import userModel from "../models/user.model.js";
+import { userModel } from '../dao/models/models.js'
 import { extractCookie } from "../helpers/utils.js";
 
 import GitHubStrategy from 'passport-github2'

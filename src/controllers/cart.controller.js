@@ -1,188 +1,248 @@
-import { cartModel, ticketModel } from '../models/models.js'
+import { CartService, ProductService, TicketService } from '../repositories/index.js'
 import { serverErrorResponse } from "../helpers/serverResponses.js";
 import { generateCode, calculateAmount } from '../helpers/utils.js';
 import nodemailer from 'nodemailer'
 import Mailgen from 'mailgen';
 
-import Product from '../dao/products.dao.js';
-
-
-const productsService = new Product()
 
 /**     CREATE     **/
-export const saveToCart = async (req, res) => {
-    const id = req.params.id
+export const createCart = async ( req, res ) => {
     try {
-        // Busca el producto para ser añadido
-        const product = await productsService.getProductByID( id )
-        if ( product === 'no-data' ) {
-            return serverErrorResponse( res, 404 );
-        }
-
-        // Busca el carrito. En caso de no existir, crea una instancia de carrito
-        let cart = await cartModel.findOne()
-        if (!cart) {
-            cart = await cartModel.create({})
-        }
-
-        const prevProduct = cart.products.find(item => item.product.equals(product._id))
-
-        if (prevProduct) {
-            if (prevProduct.quantity >= product.stock) {
-                return res.status(400).json({
-                    ok: false,
-                    title: 'Error 400',
-                    message: 'No hay suficiente stock disponible.'
-                })
-            }
-            prevProduct.quantity += 1;
-            prevProduct.totalPrice = product.price * prevProduct.quantity;
-        } else {
-            if (product.stock <= 0) {
-                return res.status(400).json({
-                    ok: false,
-                    title: 'Error 400',
-                    message: 'No hay suficiente stock disponible.'
-                })
-            }
-            cart.products.push({
-                product: product._id,
-                quantity: 1,
-                totalPrice: product.price
-            });
-        }
-
-        // Calcula la cantidad de productos que hay en el carrito
-        const length = cart.products.reduce((total, item) => total + item.quantity, 0)
-        cart.length = length
-
-        await cart.save()
-
-        res.status(200).json({
-            ok: true,
-            status: 200,
-            message: 'Producto agregado',
-            result: product
+        const result = await CartService.create()
+        res.status( 201 ).json({
+            status: 201,
+            result: result
         })
-    } catch (error) { serverErrorResponse(res, 500) }
+    } catch ( error ) { serverErrorResponse(res, 500) }
 }
-/**     READ     **/
-export const getCart = async (req, res) => {
-    try {
-        const cart = await cartModel.findOne().populate('products').lean().exec();
 
-        if (!cart) {
-            return res.status(200).json({
-                ok: false,
-                status: 200,
-                result: 'no-data'
+/**     GetCart     **/
+export const getCart = async ( req, res ) => {
+
+    const cid = req.params.cid
+
+    try {
+        const result = await CartService.readOne( cid )
+        if( result === null ){
+            return serverErrorResponse( res, 404 )
+        }
+
+        res.status( 201 ).json({
+            status: 201,
+            result: result
+        })
+    } catch ( error ) { 
+        serverErrorResponse(res, 500) 
+        console.log(error.message)
+    }
+}
+
+/**     Add to cart     **/
+export const addToCart = async ( req, res ) => {
+    const cid = req.params.cid
+    const pid = req.params.pid
+    try {
+        const cartToUpdate = await CartService.readOne( cid )
+        if( cartToUpdate === null ) {
+            return serverErrorResponse( res, 404 )
+        }
+
+        const productToAdd = await ProductService.readById( pid )
+        if( productToAdd === null ) {
+            return serverErrorResponse( res, 404 )
+        }
+
+        const prevProduct = cartToUpdate.products.find( item => item.product.equals( pid ))
+        if ( prevProduct ) {
+            if (prevProduct.quantity >= productToAdd.stock) {
+                console.log('no hay stock')
+                return res.status(400).json({
+                    ok: false,
+                    title: 'Error 400',
+                    message: 'No hay suficiente stock disponible.'
+                })
+            }
+            prevProduct.quantity += 1
+            prevProduct.totalPrice = productToAdd.price * prevProduct.quantity;
+        } else {
+            if ( productToAdd.stock <= 0) {
+                console.log('no hay stock')
+                return res.status(400).json({
+                    ok: false,
+                    title: 'Error 400',
+                    message: 'No hay suficiente stock disponible.'
+                })
+            }
+            cartToUpdate.products.push({
+                product: pid ,
+                quantity: 1,
+                totalPrice: productToAdd.price
             })
         }
-        res.status(200).json({
-            ok: true,
+
+        const result = await CartService.update( cid, cartToUpdate )
+        
+        res.status( 200 ).json({
             status: 200,
-            cid: cart._id,
-            result: cart
-        });
+            result: result
+        })
 
-    } catch (error) { serverErrorResponse(res, 500) }
+    } catch ( error ) { serverErrorResponse( res, 500 ) }
 }
-/**     DELETE     **/
-export const cleanCart = async (req, res) => {
+
+/**     Delete from Cart    **/
+export const deleteFromCart = async ( req, res ) => {
+    const cid = req.params.cid
+    const pid = req.params.pid
     try {
 
-        const cart = await cartModel.findOne();
-
-        if (!cart) {
-            return res.status(404).json({
-                ok: false,
-                title: 'Error 404',
-                message: 'Aún hay productos en el carrito.'
-            })
+        const cartToUpdate = await CartService.readOne( cid )
+        if( cartToUpdate === null ) return serverErrorResponse( res, 404 )
+        
+        const productToDelete = await ProductService.readById( pid )
+        if( productToDelete === null ) return serverErrorResponse( res, 404 )
+        
+        const productIndex = cartToUpdate.products.findIndex( item => item.product._id.toString() == pid )
+        if ( productIndex === -1 ){
+            return res.status(400).json({ status:'error', error: `Product with id-${ pid } not found in Cart with id-${ cid }`})
+        } else {
+            cartToUpdate.products = cartToUpdate.products.filter( item => item.product._id.toString() !== pid )
         }
+        
+        const result = await CartService.update( cid, cartToUpdate )
 
-        await cartModel.findOneAndDelete({});
+        res.status(200).json({ 
+            status: 200,
+            result: result
+        })
 
-        res.status(200).json({
-            ok: true,
-            title: 'Carrito eliminado',
-            message: `Carrito vaciado exitosamente.`
-        });
-
-    } catch (error) { serverErrorResponse(res, 500) }
+    } catch ( error ) { 
+        serverErrorResponse( res, 500 ) 
+        console.log(error.message)
+    }
 }
-/**     DELETE by ID     **/
-export const deleteById = async (req, res) => {
-    const id = req.params.id;
+
+/*      Update cart     */
+export const updateCart = async ( req, res ) => {
+    const cid = req.params.cid
+    try {
+        const cartToUpdate = await CartService.readOne( cid )
+        if( cartToUpdate === null ){
+            return res.status(404).json({ status:'error', error: `Cart with id-${ cid } not found`})
+        }
+        const products = req.body.products
+        if(!products) {
+            return res.status(400).json({ status: 'error', error: 'Field "products" is not optional' })
+        }
+        for (let i = 0; i < products.length; i++) {
+            if( !products[i].hasOwnProperty( 'product' ) || !products[i].hasOwnProperty( 'quantity' )) {
+                return res.status(400).json({ status: 'error', error: 'product must have a valid id and a valid quantity'})
+            }
+            if( typeof products[i].quantity !== 'number' ){
+                return res.status(400).json({ status: 'error', error: 'product\'s quantity must be a number'})
+            }
+            if( products[i].quantity === 0 ) {
+                return res.status(400).json({status: 'error', error: 'product\'s quantity cannot be 0'})
+            }
+            const productToAdd = await ProductService.readById( products[i].product )
+            if(productToAdd === null ){
+                return res.status(404).json({ status: 'error', error: `Product with id-${products[i].product} doesnot exists` })
+            }
+        }
+        cartToUpdate.products = products
+        const result = await CartService.update( cid, cartToUpdate )
+        res.status(200).json({ 
+            status: 200,
+            result: result
+        })
+    } catch ( error ) { serverErrorResponse( res, 500 ) }
+}
+
+/*      Update product from cart     */
+export const updateProductFromCart = async ( req, res ) => {
+    const cid = req.params.cid
+    const pid = req.params.pid
 
     try {
-        const cart = await cartModel.findOne();
-
-        if (!cart) {
-            return res.status(404).json({
-                ok: false,
-                title: 'Error 404',
-                message: 'Aún hay productos en el carrito.'
-            })
+        const cartToUpdate = await CartService.readOne( cid )
+        if( cartToUpdate === null ){
+            return res.status(404).json({ status:'error', error: `Cart with id-${ cid } not found`})
+        }
+        const productToUpdate = await ProductService.readById( pid )
+        if( productToUpdate === null ) {
+            return res.status(404).json({ status: 'error', error: `Product with id-${pid} Not found` })
+        }
+        
+        const quantity = req.body.quantity
+        if( !quantity ) {
+            return res.status(400).json({ status: 'error', error: 'Field "quantity" is not optional' })
         }
 
-        const productIndex = cart.products.findIndex(
-            item => item.product._id.toString() === id
-        );
-
-        if (productIndex === -1) {
-            return res.status(404).json({
-                ok: false,
-                title: 'Error 404',
-                message: 'Producto no encontrado en el carrito.'
-            })
+        if( typeof quantity !== 'number') {
+            return res.status(400).json({ status: 'error', error: 'product\'s quantity must be a number'})
         }
 
-        cart.products.splice(productIndex, 1);
+        if( quantity === 0 ) {
+            return res.status(400).json({status: 'error', error: 'product\'s quantity cannot be 0'})
+        }
+        const productIndex = cartToUpdate.products.findIndex( item => item.product == pid )
+        if( productIndex === -1 ){
+            return res.status(400).json({ status: 'error', error: `Product with id-${pid} Not found in Cart with id-${cid}`})
+        } else {
+            cartToUpdate.products[productIndex].quantity = quantity
+        }
 
-        // Calcular la longitud de productos actualizada
-        const length = cart.products.reduce((total, item) => total + item.quantity, 0);
-        cart.length = length;
-
-        await cart.save();
-
-        res.status(200).json({
-            ok: true,
-            title: 'Producto eliminado',
-            message: `Producto eliminado con el ID: ${id}`
-        });
-
-    } catch (error) { serverErrorResponse(res, 500) }
+        const result = await CartService.update( cid, cartToUpdate )
+        res.status(200).json({ 
+            status: 200,
+            result: result
+        })
+    } catch ( error ) { serverErrorResponse( res, 500 ) }
 }
+
+/*      Clean cart     */
+export const cleanCart = async ( req, res ) => {
+    const cid = req.params.cid
+    try {
+        const cartToUpdate = await CartService.readOne( cid )
+        if( cartToUpdate === null) {
+            return res.status(404).json({ status: 'error', error: `Cart with id-${cid} Not found`})
+        }
+        cartToUpdate.products = []
+        const result = await CartService.update( cid, cartToUpdate )
+        res.status(200).json({ status: 'sucess', payload: result })
+    } catch ( error ) { serverErrorResponse( res, 500 )}
+}
+
 /**     PURCHASE     **/
 export const purchase = async (req, res) => {
-
-    const cartId = req.params.cid
+    const cid = req.params.cid
     try {
 
-        const cart = await cartModel.findOne({ _id: cartId }).lean().exec()
-
+        const cart = await CartService.readOne( cid )
+        if( cart === null ) return res.status(404).json({ status:'error', error: `Cart with id-${ cid } not found`})
+    
         const { email, username } = req;
 
-        // Crear el ticket con los datos de la compra
-        const ticket = await ticketModel.create({
+        const newTicket = {
             code: generateCode(),
             purchase_datetime: Date.now(),
             amount: calculateAmount( cart.products ),
-            purchaser: email,
-        });
+            purchaser: email
+        }
 
+        // Crear el ticket con los datos de la compra
+        const ticket = await TicketService.create( newTicket )
+        
         const newArray = cart?.products.map( item => {
             return {
                 producto: item.product.title,
                 cantidad: item.quantity,
                 precio: `ARS $${item.totalPrice}`
             }
-        }) 
-
-    
+        })
+        
         // Configuración de nodemailer para que funcione con Gmail
-
         let config = {
             service: 'gmail',
             auth: {
@@ -190,9 +250,8 @@ export const purchase = async (req, res) => {
                 pass: process.env.GMAIL_PASS
             }
         }
-
+        
         let transporter = nodemailer.createTransport( config );
-
         let MailGenerator = new Mailgen({
             theme: 'default',
             product: {
@@ -200,7 +259,7 @@ export const purchase = async (req, res) => {
                 link: 'http://localhost:5173/' // Reemplazar por el dominio en el futuro
             }
         })
-
+        
         let response = {
             body: {
                 greeting: 'Hola',
@@ -218,9 +277,9 @@ export const purchase = async (req, res) => {
                 signature: false
             }
         }        
-
+        
         let mail = MailGenerator.generate( response )
-
+        
         let message = {
             from: process.env.GMAIL_USER,
             to: email,
@@ -229,6 +288,7 @@ export const purchase = async (req, res) => {
         }
 
         await transporter.sendMail( message )
+
         return res.status(200).json({
             ok: true,
             status: 200,
@@ -238,6 +298,6 @@ export const purchase = async (req, res) => {
 
     } catch (error) { 
         serverErrorResponse(res, 500)
-        console.log(error.message);
+        console.log(error.message)
     }
 }

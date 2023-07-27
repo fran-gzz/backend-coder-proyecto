@@ -5,7 +5,7 @@ import initializePassport from './helpers/passport.config.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import { authRouter, productsRouter, cartRouter } from './routes/router.js';
-import 'dotenv/config.js'
+import config from './config/config.js';
 
 const app = express();
 
@@ -27,12 +27,11 @@ app.use('/api/carts', cartRouter )
 
 // Conexión a base de datos y al localhost
 try {
-    await mongoose.connect( process.env.MONGO_URL, {
-        dbName: process.env.MONGO_NAME,
+    await mongoose.connect( config.mongo.uri, {
+        dbName: config.mongo.dbname,
     })
-    console.log('DB Connected.')
-    app.listen( 
-        process.env.PORT , () => {
-            console.log(`Listening on http://localhost:${ process.env.PORT }`)
-        });
+    console.log('Database conected.');
+    app.listen( config.apiserver.port , () => {
+        console.log(`Listening on http://localhost:${ config.apiserver.port }`)
+    });
 } catch ( error ) { console.log('Hubo un error al conectarse con la base de datos.')}

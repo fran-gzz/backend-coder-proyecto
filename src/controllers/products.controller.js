@@ -1,52 +1,38 @@
-/**
-    Proximamente el proyecto será divido entre el backend y el frontend.
-    Para cuando termine de desarrollar el frontend en ReactJS, el "res.render" será sustituido por un "res.json".
-    Mientras tanto, se usará el "res.render", ya que es correspondiente usar esto en un entorno de handlebars
-**/
-
-import Product from '../dao/products.dao.js';
+import { ProductService } from '../repositories/index.js'
 import { serverErrorResponse } from '../helpers/serverResponses.js';
-
-const productsService = new Product()
 
 
 /**     CREATE     **/
 export const createProduct = async (req, res) => {
     const product = req.body
     try {
-        let result = await productsService.createProduct( product )
+        let result = await ProductService.create( product )
         res.status(201).json({
             ok: true,
             status: 201,
-            title: 'Producto creado.',
-            message: `Se creó el producto con el ID: ${ result._id }.`,
+            message: `Producto creado con el ID: ${ result._id }.`,
         })
     } catch ( error ){ serverErrorResponse( res, 500 )}
 }
-
-
-
-
 /**     READ     **/
 export const getProducts = async (req, res) => {
     let page = parseInt(req.query?.page) || 1;
-    let limit = 6;
+    let limit = 6
     try {
-        const products = await productsService.getProducts( page, limit );
+        const result = await ProductService.readAll( page, limit )
         res.status(200).json({
             ok: true,
             status: 200,
-            result: products,
+            result: result,
         })
     } catch ( error ){ serverErrorResponse( res, 500 )}
 }
-
 /**     READ by ID   **/
 export const getProductById = async (req, res) => {
     const id = req.params.id;
     try {
-        const product = await productsService.getProductByID( id )
-        if ( product === 'no-data' ) {
+        const product = await ProductService.readById( id )
+        if ( product === null ) {
             return serverErrorResponse( res, 404 )
         } else {
             res.status( 200 ).json({
@@ -57,40 +43,36 @@ export const getProductById = async (req, res) => {
         }
     } catch ( error ){ serverErrorResponse( res, 500 )}
 }
-
 /**     UPDATE      **/
 export const updateProduct = async (req, res) => {
-    const _id = req.params.id;
+    const id = req.params.id;
     try {
-        const product = await productsService.getProductByID( _id );
-        if ( product === 'no-data' ) {
+        const product = await ProductService.readById( id );
+        if ( product === null ) {
             return serverErrorResponse( res, 404 )
         } else {
-            let result = await productsService.updateProduct( product._id, req.body )
+            let result = await ProductService.update( product._id, req.body )
             res.status( 200 ).json({
                 ok: true,
                 status: 200,
-                title: 'Producto actualizado.',
-                message: `Se actualizó el producto con el ID: ${ result._id }.`,
+                message: `Producto actualizado con el ID: ${ result._id }.`,
             })
         }
     } catch ( error ){ serverErrorResponse( res, 500 )}
 }
-
 /**     DELETE      **/
 export const deleteProduct = async (req, res) => {
     const id = req.params.id;
     try {
-        const product = await productsService.getProductByID( id )
-        if ( product === 'no-data' ) {
+        const product = await ProductService.readById( id )
+        if ( product === null ) {
             return serverErrorResponse( res, 404 )
         } else { 
-            let result = await productsService.deleteProduct( product._id )
+            await ProductService.delete( product._id )
             res.status(200).json({
                 ok: true,
                 status: 200,
-                title: 'Producto eliminado.',
-                message: `Se eliminó el producto con el ID: ${result.id}.`,
+                message: `Producto eliminado con el ID: ${ id }.`,
             })
         }
     } catch ( error ){ serverErrorResponse( res, 500 )}
