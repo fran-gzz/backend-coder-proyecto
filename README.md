@@ -39,3 +39,8 @@
     * ✅ purchaser: String, contrendá el email del usuario asociado al carrito
 * ✅ Implementar en el router de carts la ruta /:id/purchase, la cual permitirá finalizar el proceso de compra de dicho carrito.
 * ✅ Al final, utilizar el servicio de Tickets para poder generar un ticket con los datos de la compra.
+
+---
+* ✅ Usar Brotli para la compresión de los datos.
+* Generar un módulo de mocking para el servidor, que genere 100 productos con el mismo formato que entregaría una petición de mongo
+* Generar un customizador de errores

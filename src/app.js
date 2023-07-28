@@ -1,4 +1,5 @@
 import express from 'express'
+import compression from 'express-compression'
 import mongoose from 'mongoose';
 import passport from 'passport';
 import initializePassport from './helpers/passport.config.js';
@@ -14,7 +15,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use(cors())
-app.use(express.static('./src/public' ))
+app.use(compression({
+    brotli: { enabled: true, zlib: {}}
+}))
+
+
 
 // Passport
 initializePassport()
