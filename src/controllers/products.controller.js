@@ -1,6 +1,6 @@
 import { ProductService } from '../repositories/index.js'
 import { serverErrorResponse } from '../helpers/serverResponses.js';
-
+import { generateMockingProducts } from '../helpers/utils.js';
 
 /**     CREATE     **/
 export const createProduct = async (req, res) => {
@@ -75,5 +75,20 @@ export const deleteProduct = async (req, res) => {
                 message: `Producto eliminado con el ID: ${ id }.`,
             })
         }
+    } catch ( error ){ serverErrorResponse( res, 500 )}
+}
+/**     MOCK      **/
+export const getMockingProducts = async (req, res) => {
+    let products = []
+    const totalProducts = 100;
+    try {
+        for( let i = 0; i < totalProducts; i++ ){
+            products.push( generateMockingProducts())
+        }
+        res.status( 200 ).json({
+            ok: true,
+            status: 200,
+            result: products
+        })
     } catch ( error ){ serverErrorResponse( res, 500 )}
 }

@@ -42,5 +42,5 @@
 
 ---
 * ✅ Usar Brotli para la compresión de los datos.
-* Generar un módulo de mocking para el servidor, que genere 100 productos con el mismo formato que entregaría una petición de mongo
+* ✅ Generar un módulo de mocking para el servidor, que genere 100 productos con el mismo formato que entregaría una petición de mongo
 * Generar un customizador de errores

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { faker } from '@faker-js/faker'
 import { serverErrorResponse } from './serverResponses.js'
 
 
@@ -87,4 +88,20 @@ export const calculateAmount = ( products ) => {
         amount += product.totalPrice;
     }
     return amount
+}
+
+//////////////////
+
+faker.location = 'es'
+
+// Plantilla de productos mockeados
+export const generateMockingProducts = () => {
+    return {
+        id: faker.database.mongodbObjectId(),
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: faker.commerce.price(),
+        stock: faker.number.int({ min: 1, max: 50 }),
+        thumbnail: faker.image.urlLoremFlickr({ category: 'cats' }),
+    }
 }
