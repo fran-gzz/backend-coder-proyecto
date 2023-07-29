@@ -2,17 +2,32 @@ import { ProductService } from '../repositories/index.js'
 import { serverErrorResponse } from '../helpers/serverResponses.js';
 import { generateMockingProducts } from '../helpers/utils.js';
 
+import CustomError from '../errors/CustomError.js';
+import ErrorType from '../errors/error-type.js';
+import { typeErrorMessage } from '../errors/error-messages.js';
+
 /**     CREATE     **/
 export const createProduct = async (req, res) => {
     const product = req.body
     try {
+        if( !product.title || !product.description || !product.price || !product.thumbnail || !product.stock ) {
+            CustomError.createError({
+                name: 'Error al crear el producto',
+                cause: typeErrorMessage( product, 'product' ),
+                code: ErrorType.INVALID_TYPES_ERROR
+            })
+        }
         let result = await ProductService.create( product )
         res.status(201).json({
             ok: true,
             status: 201,
             message: `Producto creado con el ID: ${ result._id }.`,
         })
-    } catch ( error ){ serverErrorResponse( res, 500 )}
+    } catch ( error ){
+        console.log(error.message);
+        console.log(error.cause);
+        serverErrorResponse( res, 500 )
+    }
 }
 /**     READ     **/
 export const getProducts = async (req, res) => {

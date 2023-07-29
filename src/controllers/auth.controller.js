@@ -2,11 +2,26 @@ import { AuthService, CartService } from '../repositories/index.js';
 import { generateToken, createHash } from '../helpers/utils.js'
 import { serverErrorResponse } from '../helpers/serverResponses.js';
 
+import CustomError from '../errors/CustomError.js';
+import ErrorType from '../errors/error-type.js';
+import { typeErrorMessage } from '../errors/error-messages.js';
+
 
 /**     REGISTER     **/
 export const userRegister = async ( req, res ) => {
     const { first_name, last_name, email, age, password } = req.body;
+
     try {
+
+        if( !first_name || !last_name || !email || !age || !password ){
+            CustomError.createError({
+                name: 'Error en la creación del usuario',
+                cause: typeErrorMessage({ first_name, last_name, email, age, password }, 'register'),
+                message: 'Error al intentar crear el usuario.',
+                code: ErrorType.INVALID_TYPES_ERROR
+            })
+        }
+
         const user = await AuthService.readOne( email );
         if ( user !== null ) {
             console.log('El email ya está en uso')
@@ -31,17 +46,28 @@ export const userRegister = async ( req, res ) => {
             })
         }
     } catch ( error ) { 
-        serverErrorResponse( res, 500 )
         console.log(error.message)
+        console.log(error.cause);
+        serverErrorResponse( res, 500 )
     }
 }
 
-
 /**     LOGIN     **/
 export const userLogin = async ( req, res ) => {
-    const { email } = req.body;
+    const { email, password } = req.body;
     try {
+
+        if( !email || !password ){
+            CustomError.createError({
+                name: 'Error al iniciar sesión.',
+                cause: typeErrorMessage({ email, password }, 'login'),
+                message: 'Error al intentar iniciar sesión.',
+                code: ErrorType.INVALID_TYPES_ERROR
+            })
+        }
+
         const user = await AuthService.readOne( email );
+
         if ( !user ) {
             return res.status( 400 ).json({
                 ok: false,
@@ -67,10 +93,14 @@ export const userLogin = async ( req, res ) => {
             })
             console.log('Inicio de sesión exitoso.');
         }
-    } catch ( error ) { serverErrorResponse( res, 500 )}
+    } catch ( error ) { 
+        console.log(error.message)
+        console.log(error.cause);
+        serverErrorResponse( res, 500 )
+    }
 }
 
-
+/**     Renovación del token     **/
 export const renewToken = async ( req, res ) => {
     const { email } = req;
     try {
@@ -103,7 +133,6 @@ export const renewToken = async ( req, res ) => {
     } catch ( error ) { serverErrorResponse( res, 500 )}
     
 }
-
 
 /**     LOGOUT     **/
 export const userLogout = ( req, res ) => {

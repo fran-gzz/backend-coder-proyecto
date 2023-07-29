@@ -3,15 +3,18 @@ import mongoose from 'mongoose';
 import passport from 'passport';
 import initializePassport from './helpers/passport.config.js';
 import { authRouter, productsRouter, cartRouter } from './routes/router.js';
+import errorHandler from './middlewares/error-handler.middleware.js';
 
 // Passport
 initializePassport()
-app.use(passport.initialize())
+app.use( passport.initialize())
 
 // Rutas
 app.use('/api/auth', authRouter )
 app.use('/api/products', productsRouter )
 app.use('/api/carts', cartRouter )
+
+app.use( errorHandler )
 
 // Conexión a base de datos y al localhost
 try {
