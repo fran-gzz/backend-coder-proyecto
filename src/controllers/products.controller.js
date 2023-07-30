@@ -6,6 +6,8 @@ import CustomError from '../errors/CustomError.js';
 import ErrorType from '../errors/error-type.js';
 import { typeErrorMessage } from '../errors/error-messages.js';
 
+import logger from '../config/winston.config.js';
+
 /**     CREATE     **/
 export const createProduct = async (req, res) => {
     const product = req.body
@@ -18,14 +20,17 @@ export const createProduct = async (req, res) => {
             })
         }
         let result = await ProductService.create( product )
+
+        logger.info(`Producto creado con el ID: ${ result._id }.`,)
+
         res.status(201).json({
             ok: true,
             status: 201,
             message: `Producto creado con el ID: ${ result._id }.`,
         })
     } catch ( error ){
-        console.log(error.message);
-        console.log(error.cause);
+        logger.error(error.message);
+        logger.error(error.cause);
         serverErrorResponse( res, 500 )
     }
 }
@@ -66,6 +71,9 @@ export const updateProduct = async (req, res) => {
         if ( product === null ) {
             return serverErrorResponse( res, 404 )
         } else {
+
+            logger.info(`Producto actualizado con el ID: ${ result._id }.`)
+
             let result = await ProductService.update( product._id, req.body )
             res.status( 200 ).json({
                 ok: true,
@@ -84,6 +92,8 @@ export const deleteProduct = async (req, res) => {
             return serverErrorResponse( res, 404 )
         } else { 
             await ProductService.delete( product._id )
+            
+            logger.info(`Producto eliminado con el ID: ${ id }.`)
             res.status(200).json({
                 ok: true,
                 status: 200,

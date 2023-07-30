@@ -33,7 +33,7 @@ export const getCart = async ( req, res ) => {
         })
     } catch ( error ) { 
         serverErrorResponse(res, 500) 
-        console.log(error.message)
+        logger.error(error.message)
     }
 }
 
@@ -55,7 +55,7 @@ export const addToCart = async ( req, res ) => {
         const prevProduct = cartToUpdate.products.find( item => item.product.equals( pid ))
         if ( prevProduct ) {
             if (prevProduct.quantity >= productToAdd.stock) {
-                console.log('no hay stock')
+                logger.warning('no hay stock')
                 return res.status(400).json({
                     ok: false,
                     title: 'Error 400',
@@ -66,7 +66,7 @@ export const addToCart = async ( req, res ) => {
             prevProduct.totalPrice = productToAdd.price * prevProduct.quantity;
         } else {
             if ( productToAdd.stock <= 0) {
-                console.log('no hay stock')
+                logger.warning('no hay stock')
                 return res.status(400).json({
                     ok: false,
                     title: 'Error 400',
@@ -118,7 +118,7 @@ export const deleteFromCart = async ( req, res ) => {
 
     } catch ( error ) { 
         serverErrorResponse( res, 500 ) 
-        console.log(error.message)
+        logger.error(error.message)
     }
 }
 
@@ -256,7 +256,7 @@ export const purchase = async (req, res) => {
             theme: 'default',
             product: {
                 name: 'Store',
-                link: 'http://localhost:5173/' // Reemplazar por el dominio en el futuro
+                link: 'http://localhost:5173/' // Será reemplazado por el link al deploy del front
             }
         })
         
@@ -298,6 +298,6 @@ export const purchase = async (req, res) => {
 
     } catch (error) { 
         serverErrorResponse(res, 500)
-        console.log(error.message)
+        logger.error(error.message)
     }
 }

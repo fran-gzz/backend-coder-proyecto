@@ -6,6 +6,7 @@ import CustomError from '../errors/CustomError.js';
 import ErrorType from '../errors/error-type.js';
 import { typeErrorMessage } from '../errors/error-messages.js';
 
+import logger from '../config/winston.config.js';
 
 /**     REGISTER     **/
 export const userRegister = async ( req, res ) => {
@@ -24,7 +25,9 @@ export const userRegister = async ( req, res ) => {
 
         const user = await AuthService.readOne( email );
         if ( user !== null ) {
-            console.log('El email ya está en uso')
+
+            logger.warning('El email ya está en uso')
+
             return res.status( 400 ).json({
                 ok: false,
                 status: 400,
@@ -38,7 +41,8 @@ export const userRegister = async ( req, res ) => {
             }
             let result = await AuthService.create( newUser )
             
-            console.log(`Usuario registrado con el ID: ${ result._id }`)
+            logger.info(`Usuario registrado con el ID: ${ result._id }`)
+            
             res.status( 201 ).json({
                 ok: true,
                 status: 201,
@@ -46,8 +50,8 @@ export const userRegister = async ( req, res ) => {
             })
         }
     } catch ( error ) { 
-        console.log(error.message)
-        console.log(error.cause);
+        logger.error(error.message)
+        logger.error(error.cause);
         serverErrorResponse( res, 500 )
     }
 }
@@ -69,10 +73,13 @@ export const userLogin = async ( req, res ) => {
         const user = await AuthService.readOne( email );
 
         if ( !user ) {
+            
+            logger.warning('El usuario no existe')
+
             return res.status( 400 ).json({
                 ok: false,
                 status: 400,
-                message: 'Email inválido.'
+                message: 'El usuario no existe.'
             })
         } else {
             
@@ -91,11 +98,11 @@ export const userLogin = async ( req, res ) => {
                 uid: user._id,
                 username: name,
             })
-            console.log('Inicio de sesión exitoso.');
+            logger.info('Inicio de sesión exitoso.');
         }
     } catch ( error ) { 
-        console.log(error.message)
-        console.log(error.cause);
+        logger.error(error.message)
+        logger.error(error.cause);
         serverErrorResponse( res, 500 )
     }
 }
@@ -106,11 +113,13 @@ export const renewToken = async ( req, res ) => {
     try {
         const user = await AuthService.readOne( email );
         if ( !user ) {
+            
+            logger.warning('El usuario no existe')
+
             return res.status( 400 ).json({
                 ok: false,
                 status: 400,
-                title: 'Error',
-                message: 'No se encontró un usuario con el email proporcionado.'
+                message: 'El usuario no existe.'
             })
         } else {
             const name = user.first_name
@@ -128,7 +137,7 @@ export const renewToken = async ( req, res ) => {
                 uid: user._id,
                 username: name,
             })
-            console.log('Datos del usuario renovados.');
+            logger.info('Datos del usuario renovados.');
         }
     } catch ( error ) { serverErrorResponse( res, 500 )}
     
@@ -137,13 +146,12 @@ export const renewToken = async ( req, res ) => {
 /**     LOGOUT     **/
 export const userLogout = ( req, res ) => {
     // TODO: Logout de Github
-    console.log('Sesión cerrada.')
+    logger.info('Sesión cerrada.')
     try {
         res.clearCookie( process.env.COOKIE_NAME ).status( 200 ).json({
             ok: true,
             status: 200,
-            title: 'Acción completada',
-            message: 'El usuario cerró sesión satisfactoriamente.'
+            message: 'El usuario cerró sesión exitosamente.'
         })
     } catch ( error ) { serverErrorResponse( res, 500 )}
 }
