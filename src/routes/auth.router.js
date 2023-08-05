@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { userRegister, userLogin, userLogout, renewToken } from '../controllers/auth.controller.js'
+import { userRegister, userLogin, userLogout, renewToken, renewPassword, verifyUserToken, resetPassword, updateToPremium } from '../controllers/auth.controller.js'
 import { validateToken } from "../helpers/utils.js";
 
 const router = Router()
@@ -38,6 +38,13 @@ router.get('/githubcallback', passport.authenticate('github', {
 // Logout
 router.get( '/logout', userLogout )
 
+// Reestablecer contraseña
+router.post('/forget-password', renewPassword )
+router.get('/verify-token/:token', verifyUserToken )
+router.post('/reset-password/:user', resetPassword )
+
+// User to premium
+router.get('/premium/:email', updateToPremium )
 
 
 export default router;
