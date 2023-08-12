@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken'
 import { faker } from '@faker-js/faker'
 import { serverErrorResponse } from './serverResponses.js'
 
-
 /*      Hasheo de contraseña      */
 export const createHash = password => {
     return bcrypt.hashSync( password, bcrypt.genSaltSync(10) )
@@ -98,7 +97,6 @@ export const generateRandomString = (num) => {
         .join('')
         .toUpperCase();
 }
-
 
 //////////////////
 

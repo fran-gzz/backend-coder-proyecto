@@ -1,0 +1,49 @@
+paths:
+  /api/products/:
+    get:
+      sumary: Obtiene todos los productos.
+      tags: 
+        - Products
+      responses:
+        "200":
+          description: Los objetos fueron obtenidos satisfactoriamente de la base de datos.
+          content:
+            aplicaction/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Product'
+        "500":
+          description: Error interno del servidor
+
+components: 
+  schemas: 
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID autogenerado por MongoDB
+        title:
+          type: String
+          description: Título del producto.
+        description:
+          type: String
+          description: Descripción del producto
+        price:
+          type: Number
+          description: Precio del producto
+        thumbnail:
+          type: String
+          description: Imagén del producto
+        stock:
+          type: Number
+          description: Stock del producto
+
+      example:
+        _id:  ObjectId('645d412ee00785c5e90450f4')
+        title: Camiseta Juventus TEAMGEIST
+        description: Captura el espíritu del deporte de masas. Esta camiseta de fútbol de la Juventus rinde homenaje a los 15 años de historia del balón adidas Teamgeist. \n\nLa estética de líneas clásicas y los detalles curvados de malla te teletransportan al mágico verano de 2006. Los logotipos de adidas y Teamgeist y su corte holgado te garantizan un estilo deportivo auténtico. El escudo de la Juventus bordado le aporta un toque elegante.
+        price: 16900
+        thumbnail: https://frangonzalez-dev.github.io/camisetas-repo/juventus_teamgeist.webp
+        stock:  18
