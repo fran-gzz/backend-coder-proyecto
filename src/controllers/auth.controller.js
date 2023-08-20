@@ -103,7 +103,7 @@ export const userLogin = async ( req, res ) => {
                 uid: user._id,
                 username: name,
             })
-            logger.info('Inicio de sesión exitoso.');
+            logger.http('Inicio de sesión exitoso.');
         }
     } catch ( error ) { 
         logger.error(error.message)
@@ -142,7 +142,7 @@ export const renewToken = async ( req, res ) => {
                 uid: user._id,
                 username: name,
             })
-            logger.info('Datos del usuario renovados.');
+            logger.http('Datos del usuario renovados.');
         }
     } catch ( error ) { serverErrorResponse( res, 500 )}
     
@@ -151,7 +151,7 @@ export const renewToken = async ( req, res ) => {
 /**     LOGOUT     **/
 export const userLogout = ( req, res ) => {
     // TODO: Logout de Github
-    logger.info('Sesión cerrada.')
+    logger.http('Sesión cerrada.')
     try {
         res.clearCookie( process.env.COOKIE_NAME ).status( 200 ).json({
             ok: true,

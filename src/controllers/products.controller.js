@@ -37,7 +37,7 @@ export const createProduct = async (req, res) => {
 /**     READ     **/
 export const getProducts = async (req, res) => {
     let page = parseInt(req.query?.page) || 1;
-    let limit = 6
+    let limit = 50
     try {
         const result = await ProductService.readAll( page, limit )
         res.status(200).json({
